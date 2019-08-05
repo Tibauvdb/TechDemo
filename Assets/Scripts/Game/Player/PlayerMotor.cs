@@ -45,6 +45,9 @@ namespace Game.Player
 
         [SerializeField] private LayerMask _mapLayerMask;
 
+        [SerializeField] private IsGroundedChecker _isGroundedCheck;
+        public IsGroundedChecker IsGroundedCheck => _isGroundedCheck;
+
         private void Start()
         {
             _charCont = GetComponent<CharacterController>();
@@ -66,6 +69,8 @@ namespace Game.Player
             LimitMaximumRunningSpeed();
 
             _charCont.Move(_velocity * Time.deltaTime);
+
+            Debug.Log(IsGrounded);
         }
 
         private void ApplyMovement()
