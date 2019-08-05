@@ -22,11 +22,37 @@ public class NormalState : BaseState
 
     public override void OnStateExit()
     {
-        ;
+        
     }
 
     public override void Update()
     {
-        
+
+    }
+
+    public override void Move(Vector2 direction)
+    {        
+
+        if (_playerMotor.IsGrounded)
+        {
+            Debug.Log("Is grounded");
+            _playerMotor.Movement = new Vector3(direction.x,0,direction.y);
+        }
+    }
+
+    public override void InteractA()
+    {
+    }
+
+    public override void InteractB()
+    {
+    }
+
+    public override void InteractX()
+    {
+    }
+
+    public override void InteractY()
+    {
     }
 }

@@ -4,21 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Game.InputSystem;
+using Game.Player;
 
 namespace Game
 {
     public class JumpCommand : IImpulseCommand
     {
-        private readonly SmallPlayer _smallPlayer;
+        private readonly PlayerController _player;
 
-        public JumpCommand(SmallPlayer smallPlayer)
+        public JumpCommand(PlayerController player)
         {
-            _smallPlayer = smallPlayer;
+            _player = player;
         }
 
         public void Execute()
         {
-            _smallPlayer.Jump();
+            _player.CurrentState.InteractB();
+
         }
     }
 }

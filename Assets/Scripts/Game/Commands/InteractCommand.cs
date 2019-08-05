@@ -4,21 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Game.InputSystem;
+using Game.Player;
 
 namespace Game
 {
     public class InteractCommand : IImpulseCommand
     {
-        private readonly PlayerBase _player;
+        private readonly PlayerController _player;
 
-        public InteractCommand(PlayerBase player)
+        public InteractCommand(PlayerController player)
         {
             _player = player;
         }
 
         public void Execute()
         {
-            _player.Interact();
+            _player.CurrentState.InteractA();
         }
     }
 }
