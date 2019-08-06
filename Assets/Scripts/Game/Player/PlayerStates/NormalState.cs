@@ -31,15 +31,25 @@ public class NormalState : BaseState
     }
 
     public override void Move(Vector2 direction)
-    {        
+    {
+        _playerMotor.IsWalking = CheckIfWalking(direction);
+
 
         if (_playerMotor.IsGrounded)
         {
-            Debug.Log("Is grounded");
+            _playerMotor.IsWalking = CheckIfWalking(direction);
+
             _playerMotor.Movement = new Vector3(direction.x,0,direction.y);
         }
+        Debug.Log(_playerMotor.IsWalking);
     }
 
+    private bool CheckIfWalking(Vector2 direction)
+    {
+        if (Mathf.Abs(direction.x) < 0.1f && Mathf.Abs(direction.y) < 0.1f)
+            return false;
+        return true;
+    }
     public override void InteractA()
     {
     }

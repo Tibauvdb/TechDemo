@@ -19,10 +19,8 @@ namespace Game.Player
 
         public void SetForwardMomentum(float movement)
         {
-            Debug.Log("MOVEMEVEMT : " + movement);
+            movement = Mathf.Abs(movement);
             _anim.SetFloat("ForwardVelocity",movement);
-            Debug.Log(_anim.GetFloat(_forwardMomentumParameter));
-            Debug.Log(_anim.GetFloat("ForwardVelocity"));
         }
     }
 }

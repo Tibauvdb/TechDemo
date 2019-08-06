@@ -37,7 +37,15 @@ namespace Game.Player
         private void UpdateAnimations()
         {
             //Debug.Log(_playerMotor.Movement.x);
-            _animCont.SetForwardMomentum(_playerMotor.Velocity.z);
+            _animCont.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_playerMotor.Movement.x),Mathf.Abs(_playerMotor.Movement.z)));
+        }
+
+        private static float GetBiggestValue(float value1, float value2)
+        {
+            float temp =  Mathf.Abs(value1) + Mathf.Abs(value2);
+            return temp > 1 ? 1 : temp;
+            return value1 > value2 ? value1 : value2;
+
         }
     }
 }

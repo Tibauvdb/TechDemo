@@ -9,13 +9,14 @@ namespace Game.Player
         [SerializeField] private float _acceleration = 3;  //[m/s^2]
         [SerializeField] private float _jumpHeight = 1; //[m/s^2]
         [SerializeField] private float _dragOnGround = 1;
+        [SerializeField] private float _dragOnMovementStop = 10;
         [SerializeField] private float _dragInAir = 1;
 
         [SerializeField] private float _walkingSpeedMultiplier;
 
         private CharacterController _charCont;
         private Transform _playerTransform;
-
+        private Transform _cameraTransform;
         private Vector3 _movement;
 
         public bool IsWalking { get; set; }
@@ -28,7 +29,7 @@ namespace Game.Player
             get
             {
                 if (IsWalking)
-                    return _movement * _walkingSpeedMultiplier;
+                    return _movement/* * _walkingSpeedMultiplier*/;
                 return _movement;
             }
             set => _movement = value;
@@ -48,10 +49,13 @@ namespace Game.Player
         [SerializeField] private IsGroundedChecker _isGroundedCheck;
         public IsGroundedChecker IsGroundedCheck => _isGroundedCheck;
 
+        private Vector3 _lastRotation;
+        private Vector2 _lastMovement;
         private void Start()
         {
             _charCont = GetComponent<CharacterController>();
             _playerTransform = transform;
+            _cameraTransform = Camera.main.GetComponent<Transform>();
         }
 
         void FixedUpdate()
@@ -59,7 +63,6 @@ namespace Game.Player
             ApplyGround();
             ApplyGravity();
 
-            ApplyRotation();
             ApplyMovement();
             ApplyGroundDrag();
 
@@ -69,28 +72,39 @@ namespace Game.Player
             LimitMaximumRunningSpeed();
 
             _charCont.Move(_velocity * Time.deltaTime);
-
-            Debug.Log(IsGrounded);
         }
 
         private void ApplyMovement()
         {
             if (IsGrounded)
             {
+
                 Vector3 relativeMovement = RelativeDirection(Movement);
-                _velocity += relativeMovement * _acceleration * Time.deltaTime; // F(= m.a) [m/s^2] * t [s]
+                _velocity = relativeMovement * _acceleration; // F(= m.a) [m/s^2] * t [s]
+
+                SetPlayerForward(relativeMovement);
+
+                
             }
         }
 
+        //move player according to camera forward
         private Vector3 RelativeDirection(Vector3 direction)
         {
-            Quaternion forwardRotation =
-                Quaternion.LookRotation(Vector3.Scale(_playerTransform.forward, new Vector3(1, 0, 1)));
-
-            Vector3 relativeMovement = forwardRotation * direction;
-            return relativeMovement;
+            Vector3 moveDir = Vector3.Scale(_cameraTransform.TransformDirection(direction),new Vector3(1,0,1));
+            return moveDir;
         }
 
+        private void SetPlayerForward(Vector3 relativeMovement)
+        {
+            if (IsWalking)
+            {
+                transform.rotation = Quaternion.LookRotation(new Vector3(relativeMovement.x, _playerTransform.forward.y, relativeMovement.z));
+                _lastRotation = new Vector3(relativeMovement.x, _playerTransform.forward.y, relativeMovement.z);
+            }
+            else
+                transform.rotation = Quaternion.LookRotation(_lastRotation);
+        }
         private void ApplyGround()
         {
             if (IsGrounded)
@@ -134,7 +148,9 @@ namespace Game.Player
         {
             if (IsGrounded)
             {
-                _velocity = _velocity * (1 - Time.deltaTime * _dragOnGround);
+                _velocity *= (1 - Time.deltaTime * _dragOnGround);
+                if(!IsWalking)
+                    _velocity *= (1 - Time.deltaTime * (_dragOnGround * _dragOnMovementStop));
             }
         }
 
@@ -147,11 +163,7 @@ namespace Game.Player
 
             _velocity = yVelocity + clampedXzVelocity;
         }
-        public void ApplyRotation()
-        {
-            /*_charCont.transform.eulerAngles += new Vector3(0, Aim.x, 0) * _horizontalRotationSpeed * Time.deltaTime;
-            _cameraController.RotateVertically(Aim.z * _verticalRotationSpeed * Time.deltaTime);*/
-        }
+
         public void StopMoving()
         {
             Movement = Vector3.zero;
@@ -173,17 +185,5 @@ namespace Game.Player
         {
             _playerTransform.position = position;
         }
-
-        public void Move(Vector3 direction)
-        {
-
-        }
-
-        public void Jump()
-        {
-           
-        }
-
-
     }
 }
