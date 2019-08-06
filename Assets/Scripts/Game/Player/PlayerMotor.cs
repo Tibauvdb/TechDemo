@@ -26,16 +26,11 @@ namespace Game.Player
 
         public Vector3 Movement
         {
-            get
-            {
-                if (IsWalking)
-                    return _movement/* * _walkingSpeedMultiplier*/;
-                return _movement;
-            }
+            get => _movement;
             set => _movement = value;
         }
 
-        private Vector3 _velocity = Vector3.zero;
+        [SerializeField] private Vector3 _velocity = Vector3.zero;
         public Vector3 Velocity => _velocity;
 
         [SerializeField] private float _horizontalRotationSpeed;
@@ -49,8 +44,9 @@ namespace Game.Player
         [SerializeField] private IsGroundedChecker _isGroundedCheck;
         public IsGroundedChecker IsGroundedCheck => _isGroundedCheck;
 
-        private Vector3 _lastRotation;
+        private Quaternion _lastRotation;
         private Vector2 _lastMovement;
+
         private void Start()
         {
             _charCont = GetComponent<CharacterController>();
@@ -78,11 +74,11 @@ namespace Game.Player
         {
             if (IsGrounded)
             {
-
+                Debug.Log(Movement);
                 Vector3 relativeMovement = RelativeDirection(Movement);
+                SetPlayerRotation(relativeMovement);
                 _velocity = relativeMovement * _acceleration; // F(= m.a) [m/s^2] * t [s]
 
-                SetPlayerForward(relativeMovement);
 
                 
             }
@@ -95,15 +91,17 @@ namespace Game.Player
             return moveDir;
         }
 
-        private void SetPlayerForward(Vector3 relativeMovement)
+        private void SetPlayerRotation(Vector3 relativeMovement)
         {
             if (IsWalking)
             {
-                transform.rotation = Quaternion.LookRotation(new Vector3(relativeMovement.x, _playerTransform.forward.y, relativeMovement.z));
-                _lastRotation = new Vector3(relativeMovement.x, _playerTransform.forward.y, relativeMovement.z);
+
+                //transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(transform.forward,relativeMovement,Time.deltaTime * 15,1.0f));
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(relativeMovement), Time.deltaTime * 10);
+                //_lastRotation = transform.rotation;
             }
-            else
-                transform.rotation = Quaternion.LookRotation(_lastRotation);
+            /*else
+                transform.rotation = Quaternion.LookRotation(_lastRotation);*/
         }
         private void ApplyGround()
         {
