@@ -15,6 +15,7 @@ namespace Game.Player
         [SerializeField] private float _walkingSpeedMultiplier;
 
         private CharacterController _charCont;
+        
         private Transform _playerTransform;
         private Transform _cameraTransform;
         private Vector3 _movement;
@@ -74,13 +75,9 @@ namespace Game.Player
         {
             if (IsGrounded)
             {
-                Debug.Log(Movement);
                 Vector3 relativeMovement = RelativeDirection(Movement);
                 SetPlayerRotation(relativeMovement);
-                _velocity = relativeMovement * _acceleration; // F(= m.a) [m/s^2] * t [s]
-
-
-                
+                _velocity = relativeMovement * _acceleration; // F(= m.a) [m/s^2] * t [s]                
             }
         }
 
@@ -125,8 +122,11 @@ namespace Game.Player
             if (CanJump && IsGrounded)
             {
                 _velocity += -Physics.gravity.normalized * Mathf.Sqrt(2 * Physics.gravity.magnitude * _jumpHeight);
+                
                 CanJump = false;
             }
+            else if (CanJump && !IsGrounded)
+                CanJump = false;
 
         }
 
@@ -182,6 +182,13 @@ namespace Game.Player
         public void SetPosition(Vector3 position)
         {
             _playerTransform.position = position;
+        }
+
+        public bool CheckIfWalking(Vector2 direction)
+        {
+            if (Mathf.Abs(direction.x) < 0.1f && Mathf.Abs(direction.y) < 0.1f)
+                return false;
+            return true;
         }
     }
 }

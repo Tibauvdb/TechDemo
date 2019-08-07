@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Game.Player;
 
 
 namespace Game.Player
@@ -16,22 +17,26 @@ namespace Game.Player
         private Animator _anim;
 
         private AnimationsController _animCont;
+
         // Start is called before the first frame update
         private void Awake()
         {
-            _playerMotor = GetComponent<PlayerMotor>();
-            CurrentState = new NormalState(_playerMotor,this);
+
         }
+
         void Start()
         {
+            _playerMotor = GetComponent<PlayerMotor>();
             _anim = GetComponent<Animator>();
             _animCont = new AnimationsController(_anim);
+            CurrentState = new NormalState(_playerMotor, this, _animCont);
         }
 
         // Update is called once per frame
         void Update()
         {
             UpdateAnimations();
+            CurrentState.Update();
         }
 
         private void UpdateAnimations()
@@ -40,7 +45,8 @@ namespace Game.Player
             //Blend Idle - Walking - Running Animation 
             _animCont.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_playerMotor.Movement.x),Mathf.Abs(_playerMotor.Movement.z)));
 
-
+            /*if(_playerMotor.CanJump && _playerMotor.IsGrounded)
+                _animCont.StartJumpingAnimation();*/
         }
 
         private static float GetBiggestValue(float value1, float value2)

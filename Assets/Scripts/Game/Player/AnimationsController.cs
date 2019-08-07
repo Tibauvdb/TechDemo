@@ -10,7 +10,9 @@ namespace Game.Player
     public class AnimationsController
     {
         private Animator _anim;
-        private static int _forwardMomentumParameter = Animator.StringToHash("ForwardVelocity");
+
+        private static readonly int _forwardMomentumParameter = Animator.StringToHash("ForwardVelocity");
+        private static int _startJumpString = Animator.StringToHash("StartJump");
 
         public AnimationsController(Animator animator)
         {
@@ -20,7 +22,12 @@ namespace Game.Player
         public void SetForwardMomentum(float movement)
         {
             movement = Mathf.Abs(movement);
-            _anim.SetFloat("ForwardVelocity",movement);
+            _anim.SetFloat(_forwardMomentumParameter,movement);
+        }
+
+        public void StartJumpingAnimation()
+        {
+            _anim.SetTrigger(_startJumpString);
         }
     }
 }
