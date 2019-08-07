@@ -120,6 +120,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &190529026 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7621527752713552484, guid: 269751439e8bb854aa05a6d0af8d2b11,
+    type: 3}
+  m_PrefabInstance: {fileID: 603711693051150425}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &297505158
 GameObject:
   m_ObjectHideFlags: 3
@@ -188,7 +194,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 297505158}
-  m_LocalRotation: {x: 0.040269844, y: -0.000000017145489, z: -4.717094e-10, w: 0.99918884}
+  m_LocalRotation: {x: 0.040269844, y: 0.000000017239362, z: -0.000000001857506, w: 0.99918884}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -476,7 +482,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.040269833, y: -0.00000003438485, z: 0.0000000013857961, w: 0.99918884}
+  m_LocalRotation: {x: 0.040269833, y: 0.00000003438485, z: -0.0000000013857961, w: 0.99918884}
   m_LocalPosition: {x: 0, y: 2.481, z: -3.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -1313,7 +1319,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2106642956}
-  m_LocalRotation: {x: 0.02213647, y: -0.0000000010776108, z: 1.3560553e-10, w: 0.99975497}
+  m_LocalRotation: {x: 0.02213647, y: 0.00000000107266, z: 8.799446e-11, w: 0.99975497}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1566,5 +1572,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 603711694178527882, guid: 269751439e8bb854aa05a6d0af8d2b11,
+        type: 3}
+      propertyPath: _weapon
+      value: 
+      objectReference: {fileID: 190529026}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 269751439e8bb854aa05a6d0af8d2b11, type: 3}

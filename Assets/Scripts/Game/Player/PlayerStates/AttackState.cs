@@ -13,29 +13,56 @@ namespace Game.Player
         private readonly PlayerController _playerController;
         private readonly AnimationsController _animController;
 
+        private GameObject _weapon;
+        private Material _weaponMaterial;
+
+        private int _targetDissolveValue;
+
+        private bool _prepareToExit = false;
+
+        private float _maxDissolve = 0.8f;
+        private float _minDissolve = 0.1f;
         public AttackState(PlayerMotor playerMotor, PlayerController playerController,
             AnimationsController animController)
         {
             _playerMotor = playerMotor;
             _playerController = playerController;
             _animController = animController;
+            _weapon = _playerController.Weapon;
+            _weaponMaterial = _weapon.GetComponent<MeshRenderer>().material;
+
+            _targetDissolveValue = 0;
+        }
+
+        private void StartWeaponAppearing()
+        {
+                _weaponMaterial.SetFloat("_DissolveAmount",Mathf.Lerp(_weaponMaterial.GetFloat("_DissolveAmount"),_targetDissolveValue,Time.deltaTime));
         }
 
         public override void OnStateEnter()
         {
+            _targetDissolveValue = 0;
             //Start Sword Summon Animation
 
             //Attack
+            //Play Attack Animation
         }
 
         public override void OnStateExit()
         {
-            //Start Sword Remove Animation
+            _prepareToExit = false;
         }
 
         public override void Update()
         {
+            StartWeaponAppearing();
 
+            if (_prepareToExit && _weaponMaterial.GetFloat("_DissolveAmount") > _maxDissolve)
+            {
+                Debug.Log("Switching");
+                _playerController.SwitchState<NormalState>();
+            }
+                
         }
 
         public override void Move(Vector2 direction)
@@ -52,7 +79,6 @@ namespace Game.Player
 
         public override void InteractA()
         {
-            //Attack - Attack once when coming in
         }
 
         public override void InteractB()
@@ -63,8 +89,10 @@ namespace Game.Player
         {
         }
 
-        public override void InteractY()
+        public override void InteractY() //Remove Sword
         {
+            _targetDissolveValue = 1;
+            _prepareToExit = true;
         }
     }
 }

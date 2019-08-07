@@ -18,9 +18,13 @@ namespace Game
 
         public void Start()
         {
-            _inputHandler.Register(RegistrationFactory.Create(InputNames.A_Button,new InteractCommand(_player)));
+            _inputHandler.Register(RegistrationFactory.Create(InputNames.A_Button,new InteractACommand(_player)));
 
-            _inputHandler.Register(RegistrationFactory.Create(InputNames.B_Button, new JumpCommand(_player)));
+            _inputHandler.Register(RegistrationFactory.Create(InputNames.B_Button, new InteractBCommand(_player)));
+
+            _inputHandler.Register(RegistrationFactory.Create(InputNames.X_Button,new InteractXCommand(_player)));
+
+            _inputHandler.Register(RegistrationFactory.Create(InputNames.Y_Button, new InteractYCommand(_player)));
 
             _inputHandler.Register(RegistrationFactory.Create(InputNames.LeftJoystick,new MoveCommand(_player)));
         }

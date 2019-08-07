@@ -8,6 +8,6 @@ namespace Game.GamePlay
 {
     public  interface IInteractable
     {
-        void Interact()
+        //void Interact()
     }
 }

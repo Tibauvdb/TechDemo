@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Game.GamePlay;
 using UnityEngine;
 using Game.Player;
 
@@ -17,7 +18,10 @@ namespace Game.Player
         private Animator _anim;
 
         private AnimationsController _animCont;
+        private StateMachineController _stateMachineController;
 
+        [SerializeField] private GameObject _weapon;
+        public GameObject Weapon => _weapon;
         // Start is called before the first frame update
         private void Awake()
         {
@@ -30,11 +34,14 @@ namespace Game.Player
             _anim = GetComponent<Animator>();
             _animCont = new AnimationsController(_anim);
             CurrentState = new NormalState(_playerMotor, this, _animCont);
+
+            _stateMachineController = new StateMachineController(_playerMotor,this,_animCont);
         }
 
         // Update is called once per frame
         void Update()
         {
+            Debug.Log(CurrentState);
             UpdateAnimations();
             CurrentState.Update();
         }
@@ -49,6 +56,13 @@ namespace Game.Player
                 _animCont.StartJumpingAnimation();*/
         }
 
+        public void SwitchState<T>(IInteractable interactableObject = null) where T : BaseState
+        {
+            CurrentState?.OnStateExit();
+
+            CurrentState = _stateMachineController.GetState<T>(interactableObject);
+            CurrentState.OnStateEnter();
+        }
         private static float GetBiggestValue(float value1, float value2)
         {
             float temp =  Mathf.Abs(value1) + Mathf.Abs(value2);

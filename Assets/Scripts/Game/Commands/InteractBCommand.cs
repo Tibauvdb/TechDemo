@@ -8,18 +8,18 @@ using Game.Player;
 
 namespace Game
 {
-    public class InteractCommand : IImpulseCommand
+    public class InteractBCommand : IImpulseCommand
     {
         private readonly PlayerController _player;
 
-        public InteractCommand(PlayerController player)
+        public InteractBCommand(PlayerController player)
         {
             _player = player;
         }
 
         public void Execute()
         {
-            _player.CurrentState.InteractA();
+            _player.CurrentState.InteractB();
         }
     }
 }

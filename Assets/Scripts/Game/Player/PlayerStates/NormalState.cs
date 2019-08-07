@@ -52,6 +52,7 @@ namespace Game.Player
         public override void InteractA()
         {
             //Go into Attack State
+            _playerController.SwitchState<AttackState>();
         }
 
         public override void InteractB()
