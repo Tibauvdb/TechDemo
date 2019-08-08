@@ -20,8 +20,7 @@ namespace Game.Player
 
         private bool _prepareToExit = false;
 
-        private float _maxDissolve = 0.8f;
-        private float _minDissolve = 0.1f;
+        private float _maxDissolve = 0.85f;
         public AttackState(PlayerMotor playerMotor, PlayerController playerController,
             AnimationsController animController)
         {
@@ -43,7 +42,8 @@ namespace Game.Player
         {
             _targetDissolveValue = 0;
             //Start Sword Summon Animation
-
+            _animController.ChangeLayerWeight(1);
+            _animController.DrawWeapon();
             //Attack
             //Play Attack Animation
         }
@@ -51,6 +51,8 @@ namespace Game.Player
         public override void OnStateExit()
         {
             _prepareToExit = false;
+            //_animController.SheathWeapon();
+
         }
 
         public override void Update()
@@ -59,10 +61,9 @@ namespace Game.Player
 
             if (_prepareToExit && _weaponMaterial.GetFloat("_DissolveAmount") > _maxDissolve)
             {
-                Debug.Log("Switching");
-                _playerController.SwitchState<NormalState>();
+                Debug.Log("switching state to normal state");
+                _playerController.SwitchState<NormalState>();                
             }
-                
         }
 
         public override void Move(Vector2 direction)
@@ -79,6 +80,7 @@ namespace Game.Player
 
         public override void InteractA()
         {
+            //Light Attack
         }
 
         public override void InteractB()
@@ -93,6 +95,7 @@ namespace Game.Player
         {
             _targetDissolveValue = 1;
             _prepareToExit = true;
+            _animController.SheathWeapon();
         }
     }
 }

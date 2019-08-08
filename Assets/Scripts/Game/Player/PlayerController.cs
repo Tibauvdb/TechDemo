@@ -44,6 +44,7 @@ namespace Game.Player
             Debug.Log(CurrentState);
             UpdateAnimations();
             CurrentState.Update();
+            _animCont.Update();
         }
 
         private void UpdateAnimations()
@@ -63,6 +64,7 @@ namespace Game.Player
             CurrentState = _stateMachineController.GetState<T>(interactableObject);
             CurrentState.OnStateEnter();
         }
+
         private static float GetBiggestValue(float value1, float value2)
         {
             float temp =  Mathf.Abs(value1) + Mathf.Abs(value2);

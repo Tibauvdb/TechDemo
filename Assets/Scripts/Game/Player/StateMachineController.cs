@@ -38,7 +38,7 @@ namespace Game.Player
             {
                 if (state is T)
                 {
-                    state.OnStateExit();
+                    //state.OnStateExit();
                     return state;
                 }
 
