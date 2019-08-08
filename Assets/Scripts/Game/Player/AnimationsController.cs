@@ -78,5 +78,15 @@ namespace Game.Player
         {
             _anim.SetTrigger("SheathSword");
         }
+
+        public void LightAttack()
+        {
+            _anim.SetTrigger("LightAttack");
+        }
+
+        public void HeavyAttack()
+        {
+            _anim.SetTrigger("HeavyAttack");
+        }
     }
 }

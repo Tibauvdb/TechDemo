@@ -81,10 +81,12 @@ namespace Game.Player
         public override void InteractA()
         {
             //Light Attack
+            _animController.LightAttack();
         }
 
         public override void InteractB()
         {
+            _animController.HeavyAttack();
         }
 
         public override void InteractX()
