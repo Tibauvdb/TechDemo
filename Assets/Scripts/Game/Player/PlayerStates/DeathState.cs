@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Game.GamePlay;
 using Game.Player;
 using UnityEngine;
 
@@ -21,9 +22,9 @@ namespace Assets.Scripts.Game.Player.PlayerStates
             _playerController = playerController;
             _animController = animController;
         }
-        public override void OnStateEnter()
+        public override void OnStateEnter(IInteractable interactable)
         {
-            
+            _animController.StartDeathAnimation();
         }
 
         public override void OnStateExit()

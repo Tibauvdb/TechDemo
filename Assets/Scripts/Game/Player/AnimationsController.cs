@@ -10,9 +10,10 @@ namespace Game.Player
     public class AnimationsController
     {
         private Animator _anim;
+        private readonly PlayerController _playerController;
 
         public readonly SwordSheathToWalking SwordSheathToWalkingSB;
-
+        public readonly AttackOverBehaviour AttackOverBehaviourSB;
         private static readonly int _forwardMomentumParameter = Animator.StringToHash("ForwardVelocity");
         private static int _startJumpString = Animator.StringToHash("StartJump");
 
@@ -21,12 +22,16 @@ namespace Game.Player
         private int _currentLayer;
 
         private int _speed = 5;
-        public AnimationsController(Animator animator)
+        public AnimationsController(Animator animator,PlayerController playerController)
         {
             _anim = animator;
+            _playerController = playerController;
 
             SwordSheathToWalkingSB = _anim.GetBehaviour<SwordSheathToWalking>();
             SwordSheathToWalkingSB.AnimCont = this;
+           //AttackOverBehaviourSB = _anim.GetBehaviour<AttackOverBehaviour>();
+           //AttackOverBehaviourSB.AnimCont = this;
+           //AttackOverBehaviourSB.PlayerController = playerController;
         }
 
         public void Update()
@@ -85,6 +90,11 @@ namespace Game.Player
             _anim.SetTrigger("LightAttack");
         }
 
+        public void StopNextLightAttack()
+        {
+            _anim.ResetTrigger("LightAttack");
+        }
+
         public void HeavyAttack()
         {
             _anim.SetTrigger("HeavyAttack");
@@ -93,6 +103,15 @@ namespace Game.Player
         public void StartDeathAnimation()
         {
             _anim.SetTrigger("IsDying");
+            _anim.SetBool("Dead",true);
+        }
+
+        public bool GetCurrentDominantLayer(int layer)
+        {
+            if (_anim.GetLayerWeight(layer) >= 0.95f)
+                return true;
+
+            return false;
         }
     }
 }

@@ -1,72 +1,72 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Game.GamePlay;
 using Game.GamePlay.Weapons;
-using Game.Player;
 using UnityEngine;
 
-namespace Game.Player
+namespace Game.Player.PlayerStates
 {
-    public class NormalState : BaseState
+    public class AttackingState : BaseState
     {
         private readonly PlayerMotor _playerMotor;
         private readonly PlayerController _playerController;
         private readonly AnimationsController _animController;
 
-        public NormalState(PlayerMotor playerMotor, PlayerController playerController,
+        private BaseWeapon _weaponController;
+
+        private int _amountOfAttacks = 0;
+        public AttackingState(PlayerMotor playerMotor, PlayerController playerController,
             AnimationsController animController)
         {
             _playerMotor = playerMotor;
             _playerController = playerController;
             _animController = animController;
+
+            _weaponController = _playerController.Weapon.GetComponent<BaseWeapon>();
         }
 
-        // Update is called once per frame
         public override void OnStateEnter(IInteractable interactable)
         {
+            
 
+            _animController.LightAttack();
+            //_weaponController = (Sword)interactable;
+
+            //_weaponController.SetAttacking(true);
         }
 
         public override void OnStateExit()
         {
-
+            //_weaponController.SetAttacking(false);
+            ((Sword) _weaponController).Attacking = false;
         }
 
         public override void Update()
         {
+            ((Sword)_weaponController).Attacking = true;
+
+            _playerMotor.StopMoving();
 
         }
 
         public override void Move(Vector2 direction)
         {
-            _playerMotor.IsWalking = _playerMotor.CheckIfWalking(direction);
-
-            if (_playerMotor.IsGrounded)
-            {
-                _playerMotor.IsWalking = _playerMotor.CheckIfWalking(direction);
-
-                _playerMotor.Movement = new Vector3(direction.x, 0, direction.y);
-            }
         }
-
-
 
         public override void InteractA()
         {
-            //Go into Attack State
-            _playerController.SwitchState<HoldingWeaponState>(_playerController.Weapon.GetComponent<BaseWeapon>());
+            _animController.LightAttack();
         }
 
         public override void InteractB()
         {
-            //Jump
-            //_playerMotor.CanJump = true;
-
         }
 
         public override void InteractX()
         {
-
         }
 
         public override void InteractY()

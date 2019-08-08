@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Game.GamePlay;
 using UnityEngine;
 
 public abstract class BaseState 
 {
-    public abstract void OnStateEnter();
+    public abstract void OnStateEnter(IInteractable interactable);
 
 
     public abstract void OnStateExit();

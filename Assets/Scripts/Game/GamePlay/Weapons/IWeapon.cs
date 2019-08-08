@@ -9,5 +9,6 @@ namespace GamePlay.Weapons
     public interface IWeapon
     {
         void Hit();
+        void SetAttacking(bool state);
     }
 }

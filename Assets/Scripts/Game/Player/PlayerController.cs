@@ -18,6 +18,7 @@ namespace Game.Player
         private Animator _anim;
 
         private AnimationsController _animCont;
+        public AnimationsController AnimCont => _animCont;
         private StateMachineController _stateMachineController;
 
         [SerializeField] private GameObject _weapon;
@@ -31,7 +32,7 @@ namespace Game.Player
         {
             _playerMotor = GetComponent<PlayerMotor>();
             _anim = GetComponent<Animator>();
-            _animCont = new AnimationsController(_anim);
+            _animCont = new AnimationsController(_anim,this);
             CurrentState = new NormalState(_playerMotor, this, _animCont);
 
             _stateMachineController = new StateMachineController(_playerMotor,this,_animCont);
@@ -51,7 +52,7 @@ namespace Game.Player
         {
 
             //Blend Idle - Walking - Running Animation 
-            _animCont.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_playerMotor.Velocity.x),Mathf.Abs(_playerMotor.Velocity.z)));
+            _animCont.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_playerMotor.Movement.x),Mathf.Abs(_playerMotor.Movement.z)));
 
             /*if(_playerMotor.CanJump && _playerMotor.IsGrounded)
                 _animCont.StartJumpingAnimation();*/
@@ -62,7 +63,7 @@ namespace Game.Player
             CurrentState?.OnStateExit();
 
             CurrentState = _stateMachineController.GetState<T>(interactableObject);
-            CurrentState.OnStateEnter();
+            CurrentState.OnStateEnter(interactableObject);
         }
 
         private static float GetBiggestValue(float value1, float value2)
