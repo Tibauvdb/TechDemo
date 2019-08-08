@@ -77,7 +77,10 @@ namespace Game.Player
             {
                 Vector3 relativeMovement = RelativeDirection(Movement);
                 SetPlayerRotation(relativeMovement);
-                _velocity = relativeMovement * _acceleration; // F(= m.a) [m/s^2] * t [s]                
+                if (IsWalking)
+                    _velocity = relativeMovement * _acceleration; // F(= m.a) [m/s^2] * t [s]   
+                else
+                    _velocity = Vector3.Lerp(_velocity, Vector3.zero, Time.deltaTime * 5);
             }
         }
 

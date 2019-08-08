@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Game.Player.PlayerStates;
 using Game.GamePlay;
 using UnityEngine;
-using Game.Player;
 
 
 namespace Game.Player
@@ -10,7 +10,7 @@ namespace Game.Player
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(PlayerMotor))]
     [RequireComponent(typeof(Animator))]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour, IDamageable
     {
         public BaseState CurrentState;
 
@@ -22,11 +22,10 @@ namespace Game.Player
 
         [SerializeField] private GameObject _weapon;
         public GameObject Weapon => _weapon;
-        // Start is called before the first frame update
-        private void Awake()
-        {
 
-        }
+        private int _health = 10;
+        public int Health => _health;
+        // Start is called before the first frame update
 
         void Start()
         {
@@ -43,6 +42,7 @@ namespace Game.Player
         {
             Debug.Log(CurrentState);
             UpdateAnimations();
+
             CurrentState.Update();
             _animCont.Update();
         }
@@ -51,7 +51,7 @@ namespace Game.Player
         {
 
             //Blend Idle - Walking - Running Animation 
-            _animCont.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_playerMotor.Movement.x),Mathf.Abs(_playerMotor.Movement.z)));
+            _animCont.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_playerMotor.Velocity.x),Mathf.Abs(_playerMotor.Velocity.z)));
 
             /*if(_playerMotor.CanJump && _playerMotor.IsGrounded)
                 _animCont.StartJumpingAnimation();*/
@@ -69,6 +69,18 @@ namespace Game.Player
         {
             float temp =  Mathf.Abs(value1) + Mathf.Abs(value2);
             return temp > 1 ? 1 : temp;
+        }
+
+        public void TakeDamage(int damage)
+        {
+            _health -= damage;
+            if(_health<=0)
+                Die();
+        }
+
+        public void Die()
+        {
+            SwitchState<DeathState>();
         }
     }
 }

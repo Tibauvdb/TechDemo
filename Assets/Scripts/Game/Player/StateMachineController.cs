@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Scripts.Game.Player.PlayerStates;
 using Game.GamePlay;
 
 namespace Game.Player
@@ -30,6 +31,7 @@ namespace Game.Player
         {
             _states.Add(new NormalState(_playerMotor,_playerController,_animController));
             _states.Add(new AttackState(_playerMotor,_playerController,_animController));
+            _states.Add(new DeathState(_playerMotor,_playerController,_animController));
         }
 
         public BaseState GetState<T>(IInteractable interactableObject) where T : BaseState

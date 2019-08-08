@@ -56,6 +56,7 @@ namespace Game.Player
 
             }
         }
+
         public void ChangeLayerWeight(int layer)
         {
             _currentLayer = layer;
@@ -87,6 +88,11 @@ namespace Game.Player
         public void HeavyAttack()
         {
             _anim.SetTrigger("HeavyAttack");
+        }
+
+        public void StartDeathAnimation()
+        {
+            _anim.SetTrigger("IsDying");
         }
     }
 }

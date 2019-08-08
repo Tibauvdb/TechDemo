@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GamePlay.Weapons;
 using UnityEngine;
 
 namespace Game.Player
 {
-    class AttackState :BaseState
+    public class AttackState :BaseState
     {
         private readonly PlayerMotor _playerMotor;
         private readonly PlayerController _playerController;
@@ -15,20 +16,25 @@ namespace Game.Player
 
         private GameObject _weapon;
         private Material _weaponMaterial;
+        private IWeapon _weaponController;
 
         private int _targetDissolveValue;
 
         private bool _prepareToExit = false;
 
-        private float _maxDissolve = 0.85f;
+        private float _maxDissolve = 0.9f;
+
+
         public AttackState(PlayerMotor playerMotor, PlayerController playerController,
             AnimationsController animController)
         {
             _playerMotor = playerMotor;
             _playerController = playerController;
             _animController = animController;
+
             _weapon = _playerController.Weapon;
             _weaponMaterial = _weapon.GetComponent<MeshRenderer>().material;
+            _weaponController = _weapon.GetComponent<IWeapon>();
 
             _targetDissolveValue = 0;
         }
