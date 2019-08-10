@@ -31,7 +31,9 @@ namespace Game.Player
         private void CreateStates()
         {
             _states.Add(new NormalState(_playerMotor,_playerController,_animController));
+            _states.Add(new DrawingWeaponState(_playerMotor,_playerController,_animController));
             _states.Add(new HoldingWeaponState(_playerMotor,_playerController,_animController));
+            _states.Add(new SheathingWeapon(_playerMotor,_playerController,_animController));
             _states.Add(new DeathState(_playerMotor,_playerController,_animController));
             _states.Add(new AttackingState(_playerMotor,_playerController,_animController));
         }

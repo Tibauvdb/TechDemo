@@ -28,17 +28,13 @@ namespace Game.Player
         private float _maxDissolve = 0.9f;
 
         private float _sheathTimer = 0;
-        private float _timeUntilSheath = 5f;
+        private float _timeUntilSheath = 10f;
         public HoldingWeaponState(PlayerMotor playerMotor, PlayerController playerController,
             AnimationsController animController)
         {
             _playerMotor = playerMotor;
             _playerController = playerController;
             _animController = animController;
-
-
-
-            _targetDissolveValue = 0;
         }
 
         private void StartWeaponAppearing()
@@ -48,17 +44,17 @@ namespace Game.Player
 
         public override void OnStateEnter(IInteractable interactable)
         {
-            _targetDissolveValue = 0;
+            /*_targetDissolveValue = 0;
             //Start Sword Summon Animation
             if (!_animController.GetCurrentDominantLayer(1))
             {
                 _animController.ChangeLayerWeight(1);
                 _animController.DrawWeapon();
-            }
-
+            }*/
+            Debug.Log(interactable);
             if (interactable != null)
             {
-                Debug.Log("getting weapon");
+
                 GetWeapon(interactable);
             }
 
@@ -73,21 +69,21 @@ namespace Game.Player
         }
         public override void OnStateExit()
         {
-            _prepareToExit = false;
-            _sheathTimer = 0;
+            //_prepareToExit = false;
+            //_sheathTimer = 0;
             //_animController.SheathWeapon();
 
         }
 
         public override void Update()
         {
-            StartWeaponAppearing();
+            //StartWeaponAppearing();
 
-            if (_prepareToExit && _weaponMaterial.GetFloat("_DissolveAmount") > _maxDissolve)
+            /*if (_prepareToExit && _weaponMaterial.GetFloat("_DissolveAmount") > _maxDissolve)
             {
                 Debug.Log("switching state to normal state");
                 _playerController.SwitchState<NormalState>();                
-            }
+            }*/
 
             SheathTimer();
         }
@@ -95,16 +91,23 @@ namespace Game.Player
         private void SheathTimer()
         {
             _sheathTimer += Time.deltaTime;
-            if (_sheathTimer > _timeUntilSheath && !_prepareToExit)
+            if (_sheathTimer > _timeUntilSheath/* && !_prepareToExit*/)
             {
-                Debug.Log("resdFGdhsas");
-                SheatheWeapon();
+                
+                //SheatheWeapon();
                 _sheathTimer = 0;
+                _playerController.SwitchState<SheathingWeapon>(_weaponController);
             }
 
         }
         public override void Move(Vector2 direction)
         {
+            /*if (!_animController.isCurrentlyInAttackingLocomotionState())
+            {
+                _playerMotor.StopMoving();
+                return;
+            }*/
+
             _playerMotor.IsWalking = _playerMotor.CheckIfWalking(direction);
 
             if (_playerMotor.IsGrounded)
@@ -125,7 +128,7 @@ namespace Game.Player
 
         public override void InteractB()
         {
-            _animController.HeavyAttack();
+            //_animController.HeavyAttack();
         }
 
         public override void InteractX()
@@ -139,9 +142,10 @@ namespace Game.Player
 
         private void SheatheWeapon()
         {
-            _targetDissolveValue = 1;
+            /*_targetDissolveValue = 1;
             _prepareToExit = true;
-            _animController.SheathWeapon();
+            _animController.SheathWeapon();*/
+            _playerController.SwitchState<SheathingWeapon>(_weaponController);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Game.Player;
+using Game.Player.PlayerStates;
 using UnityEngine;
 
 public class AttackOverBehaviour : StateMachineBehaviour
@@ -12,7 +13,7 @@ public class AttackOverBehaviour : StateMachineBehaviour
     {
         PlayerController = GameObject.Find("Player").GetComponent<PlayerController>();
         AnimCont = PlayerController.AnimCont;
-        if(AnimCont.GetCurrentDominantLayer(1))
+        if(PlayerController.CurrentState is AttackingState)
             PlayerController.SwitchState<HoldingWeaponState>();
     }
 

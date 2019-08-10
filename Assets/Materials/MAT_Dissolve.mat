@@ -42,7 +42,7 @@ Material:
     m_Floats:
     - _ASEOutlineWidth: 0
     - _Cutoff: 0.5
-    - _DissolveAmount: 1
+    - _DissolveAmount: 0.516
     - _MaskClipValue: 0.5
     - __dirty: 0
     m_Colors:

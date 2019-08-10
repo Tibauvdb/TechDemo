@@ -9,62 +9,75 @@ using UnityEngine;
 
 namespace Game.Player.PlayerStates
 {
-    public class AttackingState : BaseState
+    class SheathingWeapon : BaseState
     {
         private readonly PlayerMotor _playerMotor;
         private readonly PlayerController _playerController;
         private readonly AnimationsController _animController;
 
+        private int _targetDissolveValue = 1;
+
+        private GameObject _weapon;
+        private Material _weaponMaterial;
         private BaseWeapon _weaponController;
 
-        private int _amountOfAttacks = 0;
-        public AttackingState(PlayerMotor playerMotor, PlayerController playerController,
+        public SheathingWeapon(PlayerMotor playerMotor, PlayerController playerController,
             AnimationsController animController)
         {
             _playerMotor = playerMotor;
             _playerController = playerController;
             _animController = animController;
 
-            _weaponController = _playerController.Weapon.GetComponent<BaseWeapon>();
         }
-
         public override void OnStateEnter(IInteractable interactable)
         {
 
-            _playerMotor.IsWalking = false;
-            _animController.LightAttack();
-            //_weaponController = (Sword)interactable;
+            if(interactable!=null)
+                GetWeapon(interactable);
+            else
+            GetWeapon(_playerController.Weapon.GetComponent<IInteractable>());
 
-            //_weaponController.SetAttacking(true);
+            _animController.SheathWeapon();
+
+            _playerMotor.IsWalking = false;
+        }
+
+        private void GetWeapon(IInteractable interactable)
+        {
+            _weapon = ((BaseWeapon)interactable).gameObject;
+            _weaponMaterial = _weapon.GetComponent<MeshRenderer>().material;
+            _weaponController = _weapon.GetComponent<BaseWeapon>();
         }
 
         public override void OnStateExit()
         {
-            //_weaponController.SetAttacking(false);
-            ((Sword) _weaponController).Attacking = false;
+            _animController.ChangeLayerWeight(0);
         }
 
         public override void Update()
         {
-            ((Sword)_weaponController).Attacking = true;
+            MakeWeaponDisappear();
+
+            if(_weaponMaterial.GetFloat("_DissolveAmount")>=0.9f)
+                _playerController.SwitchState<NormalState>();
 
             _playerMotor.StopMoving();
-            _playerMotor.SetRotation();
         }
 
+        private void MakeWeaponDisappear()
+        {
+            _weaponMaterial.SetFloat("_DissolveAmount", Mathf.Lerp(_weaponMaterial.GetFloat("_DissolveAmount"), _targetDissolveValue, Time.deltaTime * 1.5f));
+        }
         public override void Move(Vector2 direction)
         {
-            _playerMotor.Movement = new Vector3(direction.x,0,direction.y);
         }
 
         public override void InteractA()
         {
-            _animController.LightAttack();
         }
 
         public override void InteractB()
         {
-            _animController.HeavyAttack();
         }
 
         public override void InteractX()

@@ -23,7 +23,7 @@ public class SwordSheathToWalking : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        AnimCont.ChangeLayerWeight(0);
+        //AnimCont.ChangeLayerWeight(0);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

@@ -18,7 +18,7 @@ namespace Game.Player
         
         private Transform _playerTransform;
         private Transform _cameraTransform;
-        private Vector3 _movement;
+        [SerializeField] private Vector3 _movement;
 
         public bool IsWalking { get; set; }
         public bool CanJump { get; set; }
@@ -81,6 +81,7 @@ namespace Game.Player
                     _velocity = relativeMovement * _acceleration; // F(= m.a) [m/s^2] * t [s]   
                 else
                     _velocity = Vector3.Lerp(_velocity, Vector3.zero, Time.deltaTime * 5);
+
             }
         }
 
@@ -102,6 +103,11 @@ namespace Game.Player
             }
             /*else
                 transform.rotation = Quaternion.LookRotation(_lastRotation);*/
+        }
+
+        public void SetRotation()
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(RelativeDirection(Movement)), Time.deltaTime * 10);
         }
         private void ApplyGround()
         {
@@ -167,8 +173,9 @@ namespace Game.Player
 
         public void StopMoving()
         {
-            Movement = Vector3.zero;
+            //Movement = Vector3.zero;
             _velocity = Vector3.zero;
+            //_velocity = Vector3.Lerp(_velocity, Vector3.zero, Time.deltaTime * 5);
         }
 
         public float GetDistanceFromGround()

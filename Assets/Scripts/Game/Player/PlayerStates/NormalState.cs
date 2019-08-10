@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.GamePlay;
 using Game.GamePlay.Weapons;
 using Game.Player;
+using Game.Player.PlayerStates;
 using UnityEngine;
 
 namespace Game.Player
@@ -54,7 +55,7 @@ namespace Game.Player
         public override void InteractA()
         {
             //Go into Attack State
-            _playerController.SwitchState<HoldingWeaponState>(_playerController.Weapon.GetComponent<BaseWeapon>());
+            _playerController.SwitchState<DrawingWeaponState>(_playerController.Weapon.GetComponent<BaseWeapon>());
         }
 
         public override void InteractB()

@@ -2,7 +2,9 @@ fileFormatVersion: 2
 guid: 2548646e7f0ed244b81d53a10ebeb653
 ShaderImporter:
   externalObjects: {}
-  defaultTextures: []
+  defaultTextures:
+  - _DisolveGuide: {fileID: 2800000, guid: 2e309bd80f472034fb0a8684fb2b2482, type: 3}
+  - _BurnRamp: {fileID: 2800000, guid: 516e751d989ccc349a10c51355b1c849, type: 3}
   nonModifiableTextures: []
   userData: 
   assetBundleName: 

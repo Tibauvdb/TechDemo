@@ -17,7 +17,7 @@ namespace Game.Player
         private static readonly int _forwardMomentumParameter = Animator.StringToHash("ForwardVelocity");
         private static int _startJumpString = Animator.StringToHash("StartJump");
 
-
+        private readonly int _attackLocomotion = Animator.StringToHash("Attacking Locomotion");
         private int _totalAnimationLayers = 2;
         private int _currentLayer;
 
@@ -112,6 +112,12 @@ namespace Game.Player
                 return true;
 
             return false;
+        }
+
+        public bool isCurrentlyInAttackingLocomotionState()
+        {
+            Debug.Log(_anim.GetCurrentAnimatorStateInfo(1).IsName("Attacking Locomotion"));
+            return _anim.GetCurrentAnimatorStateInfo(1).IsName("Attacking Locomotion");
         }
     }
 }
