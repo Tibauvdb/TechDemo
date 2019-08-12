@@ -32,9 +32,12 @@ namespace Game.Enemy
             {
                 foreach (var dissolve in _dissolveMaterial)
                 {
-                    dissolve.SetFloat("_DissolveAmount",Mathf.Lerp(dissolve.GetFloat("_DissolveAmount"),1,Time.deltaTime));
+                    dissolve.SetFloat("_DissolveAmount",Mathf.Lerp(dissolve.GetFloat("_DissolveAmount"),1,Time.deltaTime*0.5f));
                 }
             }
+
+            if(_dissolveMaterial[0].GetFloat("_DissolveAmount")>=0.9f)
+                Destroy(this.gameObject);
                 
         }
         public void TakeDamage(int damage)
@@ -57,7 +60,12 @@ namespace Game.Enemy
             _anim.SetTrigger("IsDying");
             _anim.SetBool("Dead",true);
             _dead = true;
-            
+            GetComponent<CharacterController>().enabled = false;
+        }
+
+        public int GetHealth()
+        {
+            return _health;
         }
     }
 }

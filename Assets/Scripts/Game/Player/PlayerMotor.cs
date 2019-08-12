@@ -7,6 +7,7 @@ namespace Game.Player
     {
         public float MaxRunningSpeed = (30.0f * 1000) / (60 * 60);
         [SerializeField] private float _acceleration = 3;  //[m/s^2]
+        private float _baseAcceleration;
         [SerializeField] private float _jumpHeight = 1; //[m/s^2]
         [SerializeField] private float _dragOnGround = 1;
         [SerializeField] private float _dragOnMovementStop = 10;
@@ -48,11 +49,17 @@ namespace Game.Player
         private Quaternion _lastRotation;
         private Vector2 _lastMovement;
 
+        private bool _isDashing = false;
+        public bool IsDashing => _isDashing;
+        private float _dashTimer = 0;
+        [SerializeField] private float _dashLength;
         private void Start()
         {
             _charCont = GetComponent<CharacterController>();
             _playerTransform = transform;
             _cameraTransform = Camera.main.GetComponent<Transform>();
+
+            _baseAcceleration = _acceleration;
         }
 
         void FixedUpdate()
@@ -71,6 +78,20 @@ namespace Game.Player
             _charCont.Move(_velocity * Time.deltaTime);
         }
 
+        private void Update()
+        {
+            if (_isDashing)
+            {
+                _dashTimer += Time.deltaTime;
+                if (_dashTimer >= _dashLength)
+                {
+                    _acceleration = _baseAcceleration;
+                    _dashTimer = 0;
+                    _isDashing = false;
+                }
+            }
+                
+        }
         private void ApplyMovement()
         {
             if (IsGrounded)
@@ -203,6 +224,10 @@ namespace Game.Player
 
         public void PerformDashAttack()
         {
+            if (_isDashing)
+                return;
+            
+            _isDashing = true;
             _acceleration *= 10;
         }
     }

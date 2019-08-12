@@ -53,13 +53,15 @@ namespace Game.Player.PlayerStates
         {
             ((Sword)_weaponController).Attacking = true;
 
-            _playerMotor.StopMoving();
-            _playerMotor.SetRotation();
+            //_playerMotor.StopMoving();
+            //_playerMotor.SetRotation();
+
+            //_playerController.gameObject.transform.Translate(Vector3.forward *( Time.deltaTime * 5));
         }
 
         public override void Move(Vector2 direction)
         {
-            _playerMotor.Movement = new Vector3(direction.x,0,direction.y);
+            //_playerMotor.Movement = _playerController.gameObject.transform.forward;
         }
 
         public override void InteractA()

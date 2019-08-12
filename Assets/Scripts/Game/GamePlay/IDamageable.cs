@@ -10,5 +10,6 @@ namespace Game.GamePlay
     {
         void TakeDamage(int damage);
         void Die();
+        int GetHealth();
     }
 }

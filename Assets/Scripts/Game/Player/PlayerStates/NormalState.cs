@@ -67,7 +67,7 @@ namespace Game.Player
 
         public override void InteractX()
         {
-
+            _playerMotor.PerformDashAttack();
         }
 
         public override void InteractY()

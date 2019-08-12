@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.Game.Player.PlayerStates;
+using Cinemachine;
 using Game.GamePlay;
 using UnityEngine;
 
@@ -12,11 +13,15 @@ namespace Game.Player
     [RequireComponent(typeof(Animator))]
     public class PlayerController : MonoBehaviour, IDamageable
     {
+        
         public BaseState CurrentState;
 
         private PlayerMotor _playerMotor;
         private Animator _anim;
-
+        [SerializeField] private CinemachineFreeLook _cameraBrain;
+        [SerializeField] private float _dashFOV;
+        [SerializeField] private ParticleSystem _dustParticleSystem;
+        private float _originalFOV;
         private AnimationsController _animCont;
         public AnimationsController AnimCont => _animCont;
         private StateMachineController _stateMachineController;
@@ -26,6 +31,8 @@ namespace Game.Player
 
         private int _health = 10;
         public int Health => _health;
+
+        private SkinnedMeshRenderer[] _skinnedMeshRenderers;
         // Start is called before the first frame update
 
         void Start()
@@ -36,6 +43,10 @@ namespace Game.Player
             CurrentState = new NormalState(_playerMotor, this, _animCont);
 
             _stateMachineController = new StateMachineController(_playerMotor,this,_animCont);
+
+            _skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+
+            _originalFOV = _cameraBrain.m_Lens.FieldOfView;
         }
 
         // Update is called once per frame
@@ -46,6 +57,8 @@ namespace Game.Player
 
             CurrentState.Update();
             _animCont.Update();
+
+            DashVisuals(!_playerMotor.IsDashing);
         }
 
         private void UpdateAnimations()
@@ -82,6 +95,22 @@ namespace Game.Player
         public void Die()
         {
             SwitchState<DeathState>();
+        }
+
+        public int GetHealth()
+        {
+            return _health;
+        }
+
+        public void DashVisuals(bool value)
+        {
+            /*foreach (var smr in _skinnedMeshRenderers)
+            {
+                smr.enabled = value;
+            }*/
+
+            _cameraBrain.m_Lens.FieldOfView = Mathf.Lerp(_cameraBrain.m_Lens.FieldOfView, value ? _originalFOV : _dashFOV, Time.deltaTime * 5);
+            _dustParticleSystem.gameObject.SetActive(value);
         }
     }
 }

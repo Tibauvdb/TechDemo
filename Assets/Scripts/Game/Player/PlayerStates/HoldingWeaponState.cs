@@ -75,6 +75,8 @@ namespace Game.Player
             //_sheathTimer = 0;
             //_animController.SheathWeapon();
 
+            //_playerMotor.IsWalking = false;
+
         }
 
         public override void Update()
