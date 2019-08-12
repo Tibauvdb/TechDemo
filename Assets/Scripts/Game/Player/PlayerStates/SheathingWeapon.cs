@@ -18,7 +18,7 @@ namespace Game.Player.PlayerStates
         private int _targetDissolveValue = 1;
 
         private GameObject _weapon;
-        private Material _weaponMaterial;
+        private List<Material> _weaponMaterials;
         private BaseWeapon _weaponController;
 
         public SheathingWeapon(PlayerMotor playerMotor, PlayerController playerController,
@@ -45,7 +45,8 @@ namespace Game.Player.PlayerStates
         private void GetWeapon(IInteractable interactable)
         {
             _weapon = ((BaseWeapon)interactable).gameObject;
-            _weaponMaterial = _weapon.GetComponent<MeshRenderer>().material;
+            Material[] materials = _weapon.GetComponent<MeshRenderer>().materials;
+            _weaponMaterials = materials.ToList();
             _weaponController = _weapon.GetComponent<BaseWeapon>();
         }
 
@@ -58,7 +59,7 @@ namespace Game.Player.PlayerStates
         {
             MakeWeaponDisappear();
 
-            if(_weaponMaterial.GetFloat("_DissolveAmount")>=0.9f)
+            if(_weaponMaterials[0].GetFloat("_DissolveAmount")>=0.9f)
                 _playerController.SwitchState<NormalState>();
 
             _playerMotor.StopMoving();
@@ -66,7 +67,10 @@ namespace Game.Player.PlayerStates
 
         private void MakeWeaponDisappear()
         {
-            _weaponMaterial.SetFloat("_DissolveAmount", Mathf.Lerp(_weaponMaterial.GetFloat("_DissolveAmount"), _targetDissolveValue, Time.deltaTime * 1.5f));
+            foreach (var weaponMaterial in _weaponMaterials)
+            {
+                weaponMaterial.SetFloat("_DissolveAmount", Mathf.Lerp(weaponMaterial.GetFloat("_DissolveAmount"), _targetDissolveValue, Time.deltaTime * 1.5f));                
+            }
         }
         public override void Move(Vector2 direction)
         {

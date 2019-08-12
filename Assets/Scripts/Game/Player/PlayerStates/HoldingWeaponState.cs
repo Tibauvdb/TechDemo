@@ -59,6 +59,8 @@ namespace Game.Player
             }
 
             _animController.StopNextLightAttack();
+
+            _sheathTimer = 0;
         }
 
         private void GetWeapon(IInteractable interactable)
@@ -102,12 +104,6 @@ namespace Game.Player
         }
         public override void Move(Vector2 direction)
         {
-            /*if (!_animController.isCurrentlyInAttackingLocomotionState())
-            {
-                _playerMotor.StopMoving();
-                return;
-            }*/
-
             _playerMotor.IsWalking = _playerMotor.CheckIfWalking(direction);
 
             if (_playerMotor.IsGrounded)
@@ -122,8 +118,6 @@ namespace Game.Player
         {
             //Switch To Attacking State
             _playerController.SwitchState<AttackingState>(_weaponController);
-            //Light Attack
-            //_animController.LightAttack();
         }
 
         public override void InteractB()
@@ -133,6 +127,8 @@ namespace Game.Player
 
         public override void InteractX()
         {
+            //Dash
+            _playerMotor.PerformDashAttack();
         }
 
         public override void InteractY() //Remove Sword

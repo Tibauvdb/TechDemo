@@ -19,9 +19,21 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _Albedo:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BurnRamp:
+        m_Texture: {fileID: 2800000, guid: 34b537d864d433744a2dbb9484281157, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Diffuse:
         m_Texture: {fileID: 2800000, guid: 516e751d989ccc349a10c51355b1c849, type: 3}
         m_Scale: {x: 2, y: 2}
+        m_Offset: {x: 0, y: 0}
+    - _DisolveGuide:
+        m_Texture: {fileID: 2800000, guid: 2e309bd80f472034fb0a8684fb2b2482, type: 3}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ToonRamp:
         m_Texture: {fileID: 2800000, guid: 517f99b9b2b911e459486aec6c984d67, type: 3}
@@ -33,9 +45,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _ASEOutlineWidth: 0.01
+    - _Cutoff: 0.5
+    - _DissolveAmount: 0
+    - _DissolveSize: 1.7
     - _RimOffset: 0.48
     - _RimPower: 0.82
     - __dirty: 0
     m_Colors:
     - _ASEOutlineColor: {r: 0, g: 0, b: 0, a: 0}
+    - _Color0: {r: 1, g: 1, b: 1, a: 0}
     - _RimColor: {r: 0, g: 1, b: 0.8758622, a: 0}

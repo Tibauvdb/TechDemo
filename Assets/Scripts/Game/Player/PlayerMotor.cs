@@ -200,5 +200,10 @@ namespace Game.Player
                 return false;
             return true;
         }
+
+        public void PerformDashAttack()
+        {
+            _acceleration *= 10;
+        }
     }
 }

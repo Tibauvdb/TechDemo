@@ -15,11 +15,28 @@ namespace Game.Enemy
         private int _health = 10;
 
         private bool _dead;
+        private List<Material> _dissolveMaterial = new List<Material>();
         private void Start()
         {
             _anim = GetComponent<Animator>();
+            SkinnedMeshRenderer[] smr = GetComponentsInChildren<SkinnedMeshRenderer>();
+            foreach (var mr in smr)
+            {
+                _dissolveMaterial.Add(mr.material);
+            }
         }
 
+        private void Update()
+        {
+            if (_dead)
+            {
+                foreach (var dissolve in _dissolveMaterial)
+                {
+                    dissolve.SetFloat("_DissolveAmount",Mathf.Lerp(dissolve.GetFloat("_DissolveAmount"),1,Time.deltaTime));
+                }
+            }
+                
+        }
         public void TakeDamage(int damage)
         {
             if (_dead)
@@ -40,6 +57,7 @@ namespace Game.Enemy
             _anim.SetTrigger("IsDying");
             _anim.SetBool("Dead",true);
             _dead = true;
+            
         }
     }
 }

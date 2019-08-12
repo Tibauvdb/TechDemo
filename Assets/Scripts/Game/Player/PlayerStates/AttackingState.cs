@@ -18,6 +18,8 @@ namespace Game.Player.PlayerStates
         private BaseWeapon _weaponController;
 
         private int _amountOfAttacks = 0;
+
+        private Sword _swordScript;
         public AttackingState(PlayerMotor playerMotor, PlayerController playerController,
             AnimationsController animController)
         {
@@ -36,12 +38,15 @@ namespace Game.Player.PlayerStates
             //_weaponController = (Sword)interactable;
 
             //_weaponController.SetAttacking(true);
+            _swordScript = (Sword) _playerController.Weapon.GetComponent<IInteractable>();
+            _swordScript.PlayAttackParticle();
         }
 
         public override void OnStateExit()
         {
             //_weaponController.SetAttacking(false);
-            ((Sword) _weaponController).Attacking = false;
+            ((Sword) _weaponController).SetAttacking(true);
+            _swordScript.StopAttackParticle();
         }
 
         public override void Update()

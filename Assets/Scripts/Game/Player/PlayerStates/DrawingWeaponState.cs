@@ -18,7 +18,7 @@ namespace Game.Player.PlayerStates
         private int _targetDissolveValue = 0;
 
         private GameObject _weapon;
-        private Material _weaponMaterial;
+        private List<Material> _weaponMaterials = new List<Material>();
         private IInteractable _weaponController;
 
         public DrawingWeaponState(PlayerMotor playerMotor, PlayerController playerController,
@@ -31,7 +31,10 @@ namespace Game.Player.PlayerStates
 
         private void StartWeaponAppearing()
         {
-            _weaponMaterial.SetFloat("_DissolveAmount", Mathf.Lerp(_weaponMaterial.GetFloat("_DissolveAmount"), _targetDissolveValue, Time.deltaTime * 1.5f));
+            foreach (var weaponMaterial in _weaponMaterials)
+            {
+                weaponMaterial.SetFloat("_DissolveAmount", Mathf.Lerp(weaponMaterial.GetFloat("_DissolveAmount"), _targetDissolveValue, Time.deltaTime * 1.5f));                
+            }
         }
         public override void OnStateEnter(IInteractable interactable)
         {
@@ -51,7 +54,10 @@ namespace Game.Player.PlayerStates
         private void GetWeapon(IInteractable interactable)
         {
             _weapon = ((BaseWeapon)interactable).gameObject;
-            _weaponMaterial = _weapon.GetComponent<MeshRenderer>().material;
+            Material[] materials = _weapon.GetComponent<MeshRenderer>().materials;
+            Debug.Log(materials.Length);
+            _weaponMaterials = materials.ToList();
+            Debug.Log("LIST " + _weaponMaterials.Count);
             _weaponController = _weapon.GetComponent<BaseWeapon>();
         }
 
@@ -63,7 +69,7 @@ namespace Game.Player.PlayerStates
         {
             StartWeaponAppearing();
 
-            if(_weaponMaterial.GetFloat("_DissolveAmount")<=0.1f)
+            if(_weaponMaterials[0].GetFloat("_DissolveAmount")<=0.1f)
                 _playerController.SwitchState<HoldingWeaponState>(_weaponController);
 
             _playerMotor.StopMoving();
