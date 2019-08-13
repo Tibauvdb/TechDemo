@@ -51,7 +51,7 @@ namespace Game.Player
                 _animController.ChangeLayerWeight(1);
                 _animController.DrawWeapon();
             }*/
-            Debug.Log(interactable);
+
             if (interactable != null)
             {
 

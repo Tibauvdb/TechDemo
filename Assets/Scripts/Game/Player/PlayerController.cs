@@ -33,8 +33,9 @@ namespace Game.Player
         public int Health => _health;
 
         private SkinnedMeshRenderer[] _skinnedMeshRenderers;
-        // Start is called before the first frame update
-
+        
+        //[SerializeField]private List<IDamageable> _damageables = new List<IDamageable>();
+        [SerializeField] private List<GameObject> _damageables = new List<GameObject>();
         void Start()
         {
             _playerMotor = GetComponent<PlayerMotor>();
@@ -52,13 +53,21 @@ namespace Game.Player
         // Update is called once per frame
         void Update()
         {
-            Debug.Log(CurrentState);
+
             UpdateAnimations();
 
             CurrentState.Update();
             _animCont.Update();
 
             DashVisuals(!_playerMotor.IsDashing);
+
+
+            for (int i = 0; i < _damageables.Count; i++)
+            {
+                if (_damageables[i] == null)
+                    _damageables.Remove(_damageables[i]);
+            }
+
         }
 
         private void UpdateAnimations()
@@ -111,6 +120,55 @@ namespace Game.Player
 
             _cameraBrain.m_Lens.FieldOfView = Mathf.Lerp(_cameraBrain.m_Lens.FieldOfView, value ? _originalFOV : _dashFOV, Time.deltaTime * 5);
             _dustParticleSystem.gameObject.SetActive(value);
+        }
+
+        public Transform FindClosestDamageable()
+        {
+                Transform bestTarget = null;
+                float closestDistanceSqr = Mathf.Infinity;
+                Vector3 currentPosition = transform.position;
+
+                foreach (var potTarget in _damageables)
+                {
+                    Vector3 directionToTarget = potTarget.transform.position - currentPosition;
+                    float dSqrToTarget = directionToTarget.sqrMagnitude;
+
+                    if (dSqrToTarget < closestDistanceSqr)
+                    {
+                        closestDistanceSqr = dSqrToTarget;
+                        bestTarget = potTarget.gameObject.transform;
+                    }
+                }
+                return bestTarget;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.GetComponent<IDamageable>() == null || other.gameObject.layer == 8)
+                return;
+
+            
+            _damageables.Add(other.gameObject);
+        }
+
+        
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.gameObject.GetComponent<IDamageable>() == null)
+                return;
+
+            for (int i = _damageables.Count-1; i >=0; i--)
+            {
+                if (other.gameObject.Equals(_damageables[i]))
+                    _damageables.Remove(_damageables[i]);
+            }
+
+            /*for (int i = 0; i <_damageables.Count; i++)
+            {
+                if (other.gameObject.Equals(_damageables[i]))
+                    _damageables.Remove(_damageables[i]);
+            }*/
+
         }
     }
 }

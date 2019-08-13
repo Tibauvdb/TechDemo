@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Game.Player
@@ -90,8 +92,28 @@ namespace Game.Player
                     _isDashing = false;
                 }
             }
-                
+
         }
+
+        public void MoveTo(Transform target)
+        {
+            /*_playerTransform.position = Vector3.MoveTowards(_playerTransform.position, target.position, Time.deltaTime * 5);
+            _charCont.Move((target.position -_playerTransform.position)*0.01f);*/
+            _velocity = target.position-_playerTransform.position;
+        }
+
+        public void KnockBackEntity(Transform target)
+        {
+            Debug.Log("knocking back enemy");
+            target.Translate(_playerTransform.forward*50,Space.World);
+        }
+
+        public void RotateTo(Transform target)
+        {
+            Debug.Log("Rotating Towards Target");
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(target.position-_playerTransform.position), Time.deltaTime * 10);
+        }
+
         private void ApplyMovement()
         {
             if (IsGrounded)

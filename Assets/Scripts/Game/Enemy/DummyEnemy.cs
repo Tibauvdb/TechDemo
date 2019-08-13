@@ -16,6 +16,7 @@ namespace Game.Enemy
 
         private bool _dead;
         private List<Material> _dissolveMaterial = new List<Material>();
+        private CharacterController _charCTRL;
         private void Start()
         {
             _anim = GetComponent<Animator>();
@@ -24,6 +25,8 @@ namespace Game.Enemy
             {
                 _dissolveMaterial.Add(mr.material);
             }
+
+            _charCTRL = GetComponent<CharacterController>();
         }
 
         private void Update()
@@ -45,18 +48,20 @@ namespace Game.Enemy
             if (_dead)
                 return;
             _health -= damage;
-            Debug.Log("Ouch!");
+
             if (_health > 0)
             {
                 _anim.SetTrigger("Hit");
             }
             else
                 Die();
+
+            _charCTRL.Move(Time.deltaTime * -transform.forward);
+            
         }
 
         public void Die()
         {
-            Debug.Log("dyingsdfs");
             _anim.SetTrigger("IsDying");
             _anim.SetBool("Dead",true);
             _dead = true;

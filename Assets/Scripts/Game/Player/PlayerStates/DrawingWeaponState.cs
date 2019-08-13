@@ -55,9 +55,7 @@ namespace Game.Player.PlayerStates
         {
             _weapon = ((BaseWeapon)interactable).gameObject;
             Material[] materials = _weapon.GetComponent<MeshRenderer>().materials;
-            Debug.Log(materials.Length);
             _weaponMaterials = materials.ToList();
-            Debug.Log("LIST " + _weaponMaterials.Count);
             _weaponController = _weapon.GetComponent<BaseWeapon>();
         }
 

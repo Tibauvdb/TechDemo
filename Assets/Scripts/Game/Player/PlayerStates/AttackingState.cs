@@ -19,6 +19,10 @@ namespace Game.Player.PlayerStates
 
         private int _amountOfAttacks = 0;
 
+        private bool _attacking = false;
+        private float _attackTimer = 0;
+
+        private Transform _currentTarget;
         private Sword _swordScript;
         public AttackingState(PlayerMotor playerMotor, PlayerController playerController,
             AnimationsController animController)
@@ -45,7 +49,7 @@ namespace Game.Player.PlayerStates
         public override void OnStateExit()
         {
             //_weaponController.SetAttacking(false);
-            ((Sword) _weaponController).SetAttacking(true);
+            ((Sword) _weaponController).SetAttacking(false);
             _swordScript.StopAttackParticle();
         }
 
@@ -57,6 +61,20 @@ namespace Game.Player.PlayerStates
             //_playerMotor.SetRotation();
 
             //_playerController.gameObject.transform.Translate(Vector3.forward *( Time.deltaTime * 5));
+
+            if (_attacking)
+            {
+                Debug.Log("currently attacking");
+                _attackTimer += Time.deltaTime;
+                _playerMotor.MoveTo(_currentTarget);
+                //_playerMotor.KnockBackEntity(_currentTarget);
+                _playerMotor.RotateTo(_currentTarget);
+                if (_attackTimer >= 1f)
+                {
+                    _attacking = false;
+                    _attackTimer = 0;
+                }
+            }
         }
 
         public override void Move(Vector2 direction)
@@ -66,7 +84,16 @@ namespace Game.Player.PlayerStates
 
         public override void InteractA()
         {
+            
             _animController.LightAttack();
+            _currentTarget = _playerController.FindClosestDamageable();
+
+                //_playerMotor.MoveTo(_currentTarget);  
+                //_playerMotor.KnockBackEntity(_currentTarget);
+            _attacking = true;
+            _attackTimer = 0;
+
+
         }
 
         public override void InteractB()
