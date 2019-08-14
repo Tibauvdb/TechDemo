@@ -12,11 +12,16 @@ namespace Game.Enemy
     public class DummyEnemy : MonoBehaviour, IDamageable
     {
         private Animator _anim ;
-        private int _health = 10;
+        private int _health = 3;
 
         private bool _dead;
         private List<Material> _dissolveMaterial = new List<Material>();
         private CharacterController _charCTRL;
+        private Vector3 _velocity;
+        public Vector3 Velocity => _velocity;
+
+        private bool _isGrounded => _charCTRL.isGrounded;
+
         private void Start()
         {
             _anim = GetComponent<Animator>();
@@ -29,20 +34,20 @@ namespace Game.Enemy
             _charCTRL = GetComponent<CharacterController>();
         }
 
+        private void FixedUpdate()
+        {
+            ApplyGround();
+
+            _charCTRL.Move(_velocity * Time.deltaTime);
+
+            _velocity = Vector3.zero;
+        }
         private void Update()
         {
             if (_dead)
-            {
-                foreach (var dissolve in _dissolveMaterial)
-                {
-                    dissolve.SetFloat("_DissolveAmount",Mathf.Lerp(dissolve.GetFloat("_DissolveAmount"),1,Time.deltaTime*0.5f));
-                }
-            }
-
-            if(_dissolveMaterial[0].GetFloat("_DissolveAmount")>=0.9f)
-                Destroy(this.gameObject);
-                
+                DissolveOnDeath();                
         }
+
         public void TakeDamage(int damage)
         {
             if (_dead)
@@ -50,14 +55,11 @@ namespace Game.Enemy
             _health -= damage;
 
             if (_health > 0)
-            {
                 _anim.SetTrigger("Hit");
-            }
             else
                 Die();
 
-            _charCTRL.Move(Time.deltaTime * -transform.forward);
-            
+            //_charCTRL.Move(Time.deltaTime * -transform.forward);            
         }
 
         public void Die()
@@ -71,6 +73,25 @@ namespace Game.Enemy
         public int GetHealth()
         {
             return _health;
+        }
+
+        private void ApplyGround()
+        {
+            if (_isGrounded)
+            {
+                _velocity -= Vector3.Project(_velocity, Physics.gravity.normalized);
+            }
+        }
+
+        private void DissolveOnDeath()
+        {
+            foreach (var dissolve in _dissolveMaterial)
+            {
+                dissolve.SetFloat("_DissolveAmount", Mathf.Lerp(dissolve.GetFloat("_DissolveAmount"), 1, Time.deltaTime * 0.5f));
+            }
+
+            if (_dissolveMaterial[0].GetFloat("_DissolveAmount") >= 0.9f)
+                Destroy(this.gameObject);
         }
     }
 }

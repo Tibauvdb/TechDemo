@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 603711694178527885}
   - component: {fileID: 603711694178527882}
   - component: {fileID: 603711694178527873}
-  - component: {fileID: 5773078310497184571}
+  - component: {fileID: 2749770771858093188}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -150,6 +150,7 @@ MonoBehaviour:
   _dashFOV: 0
   _dustParticleSystem: {fileID: 4446727738588301553}
   _weapon: {fileID: 3374640650204989424, guid: 5e419c00436b2e34aab3b3a4e2678fa5, type: 3}
+  _damageables: []
 --- !u!114 &603711694178527873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,8 +163,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce7a464e08e917b439aa9daa0808e0ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!65 &5773078310497184571
-BoxCollider:
+--- !u!135 &2749770771858093188
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -173,7 +174,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 0.44491148, z: 2}
+  m_Radius: 1.5
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &979815836775171339
 GameObject:

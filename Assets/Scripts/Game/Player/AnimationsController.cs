@@ -22,6 +22,7 @@ namespace Game.Player
         private int _currentLayer;
 
         private int _speed = 5;
+
         public AnimationsController(Animator animator,PlayerController playerController)
         {
             _anim = animator;
@@ -29,9 +30,6 @@ namespace Game.Player
 
             SwordSheathToWalkingSB = _anim.GetBehaviour<SwordSheathToWalking>();
             SwordSheathToWalkingSB.AnimCont = this;
-           //AttackOverBehaviourSB = _anim.GetBehaviour<AttackOverBehaviour>();
-           //AttackOverBehaviourSB.AnimCont = this;
-           //AttackOverBehaviourSB.PlayerController = playerController;
         }
 
         public void Update()
@@ -44,11 +42,6 @@ namespace Game.Player
             movement = Mathf.Abs(movement);
             _anim.SetFloat(_forwardMomentumParameter,movement);
         }
-
-        /*public void StartJumpingAnimation()
-        {
-            _anim.SetTrigger(_startJumpString);
-        }*/
 
         private void UpdateLayerWeights()
         {
@@ -112,12 +105,6 @@ namespace Game.Player
                 return true;
 
             return false;
-        }
-
-        public bool isCurrentlyInAttackingLocomotionState()
-        {
-            Debug.Log(_anim.GetCurrentAnimatorStateInfo(1).IsName("Attacking Locomotion"));
-            return _anim.GetCurrentAnimatorStateInfo(1).IsName("Attacking Locomotion");
         }
     }
 }

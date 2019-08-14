@@ -100,13 +100,10 @@ namespace Game.Player
             /*_playerTransform.position = Vector3.MoveTowards(_playerTransform.position, target.position, Time.deltaTime * 5);
             _charCont.Move((target.position -_playerTransform.position)*0.01f);*/
             _velocity = target.position-_playerTransform.position;
+            target.GetComponent<CharacterController>()
+                .Move((target.position - _playerTransform.position) * Time.deltaTime);
         }
 
-        public void KnockBackEntity(Transform target)
-        {
-            Debug.Log("knocking back enemy");
-            target.Translate(_playerTransform.forward*50,Space.World);
-        }
 
         public void RotateTo(Transform target)
         {

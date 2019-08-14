@@ -54,7 +54,6 @@ namespace Game.Player
 
             if (interactable != null)
             {
-
                 GetWeapon(interactable);
             }
 
@@ -68,6 +67,8 @@ namespace Game.Player
             _weapon = ((BaseWeapon)interactable).gameObject;
             _weaponMaterial = _weapon.GetComponent<MeshRenderer>().material;
             _weaponController = _weapon.GetComponent<BaseWeapon>();
+
+            ((Sword)_weaponController).SetAttacking(false);
         }
         public override void OnStateExit()
         {

@@ -53,7 +53,6 @@ namespace Game.Player
         // Update is called once per frame
         void Update()
         {
-
             UpdateAnimations();
 
             CurrentState.Update();
@@ -72,12 +71,8 @@ namespace Game.Player
 
         private void UpdateAnimations()
         {
-
             //Blend Idle - Walking - Running Animation 
             _animCont.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_playerMotor.Movement.x),Mathf.Abs(_playerMotor.Movement.z)));
-
-            /*if(_playerMotor.CanJump && _playerMotor.IsGrounded)
-                _animCont.StartJumpingAnimation();*/
         }
 
         public void SwitchState<T>(IInteractable interactableObject = null) where T : BaseState
@@ -113,12 +108,6 @@ namespace Game.Player
 
         public void DashVisuals(bool value)
         {
-            /*foreach (var smr in _skinnedMeshRenderers)
-            {
-                smr.enabled = value;
-            }*/
-
-            _cameraBrain.m_Lens.FieldOfView = Mathf.Lerp(_cameraBrain.m_Lens.FieldOfView, value ? _originalFOV : _dashFOV, Time.deltaTime * 5);
             _dustParticleSystem.gameObject.SetActive(value);
         }
 
@@ -150,8 +139,7 @@ namespace Game.Player
             
             _damageables.Add(other.gameObject);
         }
-
-        
+      
         private void OnTriggerExit(Collider other)
         {
             if (other.gameObject.GetComponent<IDamageable>() == null)
@@ -162,13 +150,6 @@ namespace Game.Player
                 if (other.gameObject.Equals(_damageables[i]))
                     _damageables.Remove(_damageables[i]);
             }
-
-            /*for (int i = 0; i <_damageables.Count; i++)
-            {
-                if (other.gameObject.Equals(_damageables[i]))
-                    _damageables.Remove(_damageables[i]);
-            }*/
-
         }
     }
 }
