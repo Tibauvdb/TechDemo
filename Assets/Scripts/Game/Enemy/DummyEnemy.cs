@@ -12,7 +12,8 @@ namespace Game.Enemy
     public class DummyEnemy : MonoBehaviour, IDamageable
     {
         private Animator _anim ;
-        private int _health = 3;
+        private float _health;
+        private float _maxHealth = 3;
 
         private bool _dead;
         private List<Material> _dissolveMaterial = new List<Material>();
@@ -22,6 +23,8 @@ namespace Game.Enemy
 
         private bool _isGrounded => _charCTRL.isGrounded;
 
+        private Material _healthBarMaterial;
+        private float _targetOpacity = 0;
         private void Start()
         {
             _anim = GetComponent<Animator>();
@@ -32,6 +35,9 @@ namespace Game.Enemy
             }
 
             _charCTRL = GetComponent<CharacterController>();
+
+            _health = _maxHealth;
+            _healthBarMaterial = transform.Find("HealthBar").GetComponent<MeshRenderer>().material;
         }
 
         private void FixedUpdate()
@@ -45,34 +51,46 @@ namespace Game.Enemy
         private void Update()
         {
             if (_dead)
-                DissolveOnDeath();                
+                DissolveOnDeath();
+
+            _healthBarMaterial.SetFloat("_Opacity", Mathf.Lerp(_healthBarMaterial.GetFloat("_Opacity"), _targetOpacity, Time.deltaTime));
+            _healthBarMaterial.SetFloat("_HealthRemaining",_health/_maxHealth);
+            Debug.Log(_targetOpacity);
         }
 
         public void TakeDamage(int damage)
         {
+
             if (_dead)
                 return;
             _health -= damage;
 
             if (_health > 0)
+            {
                 _anim.SetTrigger("Hit");
+                _targetOpacity = 1;
+            }
             else
                 Die();
 
+            
             //_charCTRL.Move(Time.deltaTime * -transform.forward);            
         }
 
         public void Die()
         {
+            _targetOpacity = 0;
+            
             _anim.SetTrigger("IsDying");
             _anim.SetBool("Dead",true);
             _dead = true;
             GetComponent<CharacterController>().enabled = false;
+
         }
 
         public int GetHealth()
         {
-            return _health;
+            return (int)_health;
         }
 
         private void ApplyGround()
@@ -90,6 +108,7 @@ namespace Game.Enemy
                 dissolve.SetFloat("_DissolveAmount", Mathf.Lerp(dissolve.GetFloat("_DissolveAmount"), 1, Time.deltaTime * 0.5f));
             }
 
+           
             if (_dissolveMaterial[0].GetFloat("_DissolveAmount") >= 0.9f)
                 Destroy(this.gameObject);
         }
