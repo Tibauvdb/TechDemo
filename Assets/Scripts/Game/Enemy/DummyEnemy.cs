@@ -53,7 +53,7 @@ namespace Game.Enemy
             if (_dead)
                 DissolveOnDeath();
 
-            _healthBarMaterial.SetFloat("_Opacity", Mathf.Lerp(_healthBarMaterial.GetFloat("_Opacity"), _targetOpacity, Time.deltaTime));
+            _healthBarMaterial.SetFloat("_Opacity", Mathf.Lerp(_healthBarMaterial.GetFloat("_Opacity"), _targetOpacity, Time.deltaTime * 2));
             _healthBarMaterial.SetFloat("_HealthRemaining",_health/_maxHealth);
             Debug.Log(_targetOpacity);
         }

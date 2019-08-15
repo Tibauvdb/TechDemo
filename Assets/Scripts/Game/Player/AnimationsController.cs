@@ -106,5 +106,10 @@ namespace Game.Player
 
             return false;
         }
+
+        public void HitAnimation()
+        {
+
+        }
     }
 }

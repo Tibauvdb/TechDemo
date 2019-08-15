@@ -13,7 +13,8 @@ namespace Game.Player
     [RequireComponent(typeof(Animator))]
     public class PlayerController : MonoBehaviour, IDamageable
     {
-        
+        public static Transform PlayerTransform { get; private set; }
+
         public BaseState CurrentState;
 
         private PlayerMotor _playerMotor;
@@ -38,6 +39,7 @@ namespace Game.Player
         [SerializeField] private List<GameObject> _damageables = new List<GameObject>();
         void Start()
         {
+            PlayerTransform = transform;
             _playerMotor = GetComponent<PlayerMotor>();
             _anim = GetComponent<Animator>();
             _animCont = new AnimationsController(_anim,this);
