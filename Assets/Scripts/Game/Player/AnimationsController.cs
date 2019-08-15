@@ -10,7 +10,6 @@ namespace Game.Player
     public class AnimationsController
     {
         private Animator _anim;
-        private readonly PlayerController _playerController;
 
         public readonly SwordSheathToWalking SwordSheathToWalkingSB;
         public readonly AttackOverBehaviour AttackOverBehaviourSB;
@@ -23,10 +22,9 @@ namespace Game.Player
 
         private int _speed = 5;
 
-        public AnimationsController(Animator animator,PlayerController playerController)
+        public AnimationsController(Animator animator)
         {
             _anim = animator;
-            _playerController = playerController;
 
             SwordSheathToWalkingSB = _anim.GetBehaviour<SwordSheathToWalking>();
             SwordSheathToWalkingSB.AnimCont = this;

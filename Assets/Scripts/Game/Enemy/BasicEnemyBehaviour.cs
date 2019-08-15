@@ -41,7 +41,7 @@ namespace Game.Enemy
             _transform = transform;
             _enemyMotor = GetComponent<EnemyMotor>();
             _anim = GetComponent<Animator>();
-            _animationsController = new AnimationsController(_anim,_playerController);
+            _animationsController = new AnimationsController(_anim);
 
             _playerTransform = PlayerController.PlayerTransform;
             _playerController = _playerTransform.GetComponent<PlayerController>();
@@ -51,6 +51,7 @@ namespace Game.Enemy
             new SequenceNode(
                  new ConditionNode(HasBeenAttacked),
                             new ActionNode(AttackReaction)),
+                            //Add Set Player As Target?
                         new SequenceNode(
                  new ConditionNode(CanSeePlayer),
                             new ActionNode(SetPlayerAsTarget),

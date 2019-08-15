@@ -42,7 +42,7 @@ namespace Game.Player
             PlayerTransform = transform;
             _playerMotor = GetComponent<PlayerMotor>();
             _anim = GetComponent<Animator>();
-            _animCont = new AnimationsController(_anim,this);
+            _animCont = new AnimationsController(_anim);
             CurrentState = new NormalState(_playerMotor, this, _animCont);
 
             _stateMachineController = new StateMachineController(_playerMotor,this,_animCont);
