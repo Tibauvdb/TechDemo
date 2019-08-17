@@ -107,7 +107,6 @@ namespace Game.Player
 
         public void RotateTo(Transform target)
         {
-            Debug.Log("Rotating Towards Target");
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(target.position-_playerTransform.position), Time.deltaTime * 10);
         }
 

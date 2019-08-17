@@ -107,7 +107,7 @@ namespace Game.Player
 
         public void HitAnimation()
         {
-
+            _anim.SetTrigger("Hit");
         }
     }
 }

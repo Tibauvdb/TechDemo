@@ -33,7 +33,7 @@ namespace Game.Enemy
         private bool _dead = false;
         [SerializeField] private float _fieldOfView;
         [SerializeField] private int _attackRange;
-        [SerializeField] private float _attackStunTime;
+        private float _attackStunTime =5f;
         private float _attackStunTimer;
         private bool _hasBeenAttacked;
         private float _targetOpacity = 0;
@@ -46,8 +46,10 @@ namespace Game.Enemy
         private float _minRoamCooldown = 1f;
         private float _maxRoamCooldown = 5f;
         private bool _inRoamCooldown = false;
+
         private void Start()
         {
+            #region InitVariables           
             _health = _maxHealth;
             _transform = transform;
             _enemyMotor = GetComponent<EnemyMotor>();
@@ -63,13 +65,13 @@ namespace Game.Enemy
 
             _playerTransform = PlayerController.PlayerTransform;
             _playerController = _playerTransform.GetComponent<PlayerController>();
+            #endregion
 
 
             _behaviourTree = new SelectorNode(
             new SequenceNode(
                  new ConditionNode(HasBeenAttacked),
                             new ActionNode(AttackReaction)),
-                            //Add Set Player As Target?
                         new SequenceNode(
                  new ConditionNode(CanSeePlayer),
                             new ActionNode(SetPlayerAsTarget),
@@ -99,11 +101,13 @@ namespace Game.Enemy
 
             _animationsController.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_enemyMotor.GetNavMeshVelocity().x),Mathf.Abs(_enemyMotor.GetNavMeshVelocity().z)));
         }
+
         private static float GetBiggestValue(float value1, float value2)
         {
             float temp = Mathf.Abs(value1) + Mathf.Abs(value2);
             return temp > 1 ? 1 : temp;
         }
+
         IEnumerator RunTree()
         {
             while (_health > 0)
@@ -111,12 +115,17 @@ namespace Game.Enemy
                 yield return _behaviourTree.Tick();
             }
         }
+
         private void AttackStunTime()
         {
             _attackStunTimer += Time.deltaTime;
 
             if (_attackStunTimer >= _attackStunTime)
+            {
+                _attackStunTimer = 0;
                 _hasBeenAttacked = false;
+                _enemyMotor.StopMoving(false);
+            }
         }
 
         private float DistanceToPlayer()
@@ -126,6 +135,7 @@ namespace Game.Enemy
 
         private IEnumerator<NodeResult> PrepareAttack()
         {
+            Debug.Log("Preparing Attack");
             yield return NodeResult.Succes;
         }
 
@@ -152,18 +162,25 @@ namespace Game.Enemy
 
         private IEnumerator<NodeResult> AttackReaction()
         {
-            yield return NodeResult.Succes;
+            _enemyMotor.StopMoving(true);
+            
+            _enemyMotor.RotateTo(_playerTransform.position);
+
+            if(_hasBeenAttacked)
+                yield return NodeResult.Running;
+
+            yield return NodeResult.Failure;
         }
 
         private bool CloseEnoughToPlayerToAttack()
         {
-            return true;
+            return DistanceToPlayer()<_attackRange;
         }
 
         private bool CanSeePlayer()
         {
+            Debug.Log("Can See Player?");
             Vector3 directionToPlayer = _playerTransform.position - _transform.position;
-
             if (Quaternion.Angle(_transform.rotation, Quaternion.LookRotation(directionToPlayer)) < _fieldOfView / 2)
             {
                 RaycastHit hit;
@@ -188,7 +205,6 @@ namespace Game.Enemy
 
         public void TakeDamage(int damage)
         {
-            Debug.Log("OW");
             if (_dead)
                 return;
 
@@ -252,7 +268,6 @@ namespace Game.Enemy
 
             if (_roamCooldown <= 0 && _inRoamCooldown == true)
             {
-                Debug.Log("End of roamcooldown");
                 _inRoamCooldown = false;
                 return true;
             }
