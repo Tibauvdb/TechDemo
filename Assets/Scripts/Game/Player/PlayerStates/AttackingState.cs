@@ -47,6 +47,7 @@ namespace Game.Player.PlayerStates
         {
             //((Sword) _weaponController).SetAttacking(false);
             _swordScript.StopAttackParticle();
+            ((Sword) _weaponController).Attacking = false;
         }
 
         public override void Update()

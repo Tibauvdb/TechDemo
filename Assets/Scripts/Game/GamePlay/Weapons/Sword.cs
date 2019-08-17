@@ -43,15 +43,14 @@ namespace Game.GamePlay.Weapons
         private void OnTriggerEnter(Collider other)
         {
             IDamageable damageable = other.gameObject.GetComponent<IDamageable>();
-            
+            Debug.Log(other.gameObject.name);
             if (other.gameObject.GetComponent<IDamageable>() == null || other.gameObject.tag == "Player" || Attacking == false || other.gameObject.GetComponent<IDamageable>().GetHealth()<=0)
             {
-
                 return;
             }
 
             Vector3 point = other.ClosestPoint(transform.position);
-            
+            Debug.Log("AAAAAAAAAAAAAAAA");
             damageable.TakeDamage(_swordDamage);
             Instantiate(_hitEffectPrefab, point, Quaternion.identity, null);
             //play other Animations or something idk?

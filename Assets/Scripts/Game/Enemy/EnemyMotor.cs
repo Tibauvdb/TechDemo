@@ -11,25 +11,40 @@ using Random = System.Random;
 namespace Game.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(Rigidbody))]
     public class EnemyMotor : MonoBehaviour
     {
         private NavMeshAgent _navMeshAgent;
         public CharacterController CharController { get; private set; }
         private Transform _transform;
         private Transform _playerTransform;
-        private float _runningSpeed;
-        private float _walkingSpeed;
+        private float _runningSpeed=5f;
+        private float _walkingSpeed=3.5f;
 
-        private float _rotationSpeed;
-        private void Start()
+        private float _rotationSpeed = 360;
+
+        private void Awake()
         {
             _navMeshAgent = GetComponent<NavMeshAgent>();
             CharController = GetComponent<CharacterController>();
 
             _transform = transform;
         }
+        private void Start()
+        {
+            
+ 
+        }
 
+        private void Update()
+        {
+            
+        }
+
+        public Vector3 GetNavMeshVelocity()
+        {
+            return _navMeshAgent.velocity;
+        }
         public void Walk()
         {
             _navMeshAgent.speed = _walkingSpeed;
@@ -45,15 +60,16 @@ namespace Game.Enemy
             return !_navMeshAgent.updatePosition || (_navMeshAgent.isOnNavMesh && _navMeshAgent.isStopped);
         }
 
-        public void RotateToPlayer()
+        public void RotateTo(Vector3 pos)
         {
             _transform.rotation = Quaternion.RotateTowards(_transform.rotation,
-                Quaternion.LookRotation(Vector3.Scale(_playerTransform.position - _transform.position,
+                Quaternion.LookRotation(Vector3.Scale(pos - _transform.position,
                     new Vector3(1, 0, 1))), Time.deltaTime * _rotationSpeed);
         }
 
         public bool HasNavMeshReachedDestination()
         {
+
             if (_navMeshAgent.pathPending) return false;
 
             if (_navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
@@ -66,6 +82,7 @@ namespace Game.Enemy
 
         public void SetDestination(Vector3 position)
         {
+
             _navMeshAgent.destination = position;
         }
 
@@ -81,12 +98,12 @@ namespace Game.Enemy
 
         public Vector3 GetRandomDestination(Vector3 origin, float range, int layerMask)
         {
+
             Vector3 randomPos = UnityEngine.Random.insideUnitSphere * range;
 
             randomPos += origin;
 
-            NavMeshHit navHit;
-            NavMesh.SamplePosition(randomPos, out navHit, range, layerMask);
+            NavMesh.SamplePosition(randomPos, out NavMeshHit navHit, range, layerMask);
 
             return navHit.position;
         }

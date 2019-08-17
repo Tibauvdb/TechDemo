@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SpikesBlue
+  m_Name: Spikes
   m_Shader: {fileID: 4800000, guid: c19ca08fa25634740bae2c3c61097b49, type: 3}
   m_ShaderKeywords: MULTIPLY
   m_LightmapFlags: 4
