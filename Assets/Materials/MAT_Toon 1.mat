@@ -28,7 +28,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Diffuse:
-        m_Texture: {fileID: 2800000, guid: bd910a1d744309b499b59062db7891ab, type: 3}
+        m_Texture: {fileID: 2800000, guid: 516e751d989ccc349a10c51355b1c849, type: 3}
         m_Scale: {x: 0.5, y: 0.5}
         m_Offset: {x: 0, y: 0.1}
     - _DisolveGuide:
@@ -53,5 +53,5 @@ Material:
     - __dirty: 0
     m_Colors:
     - _ASEOutlineColor: {r: 0, g: 0, b: 0, a: 0}
-    - _Color0: {r: 1, g: 1, b: 1, a: 0}
+    - _Color0: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 0}
     - _RimColor: {r: 0, g: 1, b: 0.8758622, a: 0}

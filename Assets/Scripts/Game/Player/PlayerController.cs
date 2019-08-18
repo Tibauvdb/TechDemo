@@ -4,6 +4,7 @@ using Assets.Scripts.Game.Player.PlayerStates;
 using Cinemachine;
 using Game.GamePlay;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 namespace Game.Player
@@ -30,15 +31,18 @@ namespace Game.Player
         [SerializeField] private GameObject _weapon;
         public GameObject Weapon => _weapon;
 
-        private int _health = 10;
-        public int Health => _health;
+        private float _maxHealth = 1000;
+        private float _health;
+        public float Health => _health;
 
         private SkinnedMeshRenderer[] _skinnedMeshRenderers;
         
-        //[SerializeField]private List<IDamageable> _damageables = new List<IDamageable>();
         [SerializeField] private List<GameObject> _damageables = new List<GameObject>();
+
+        [SerializeField] private Slider _healthSlider;
         void Start()
         {
+            _health = _maxHealth;
             PlayerTransform = transform;
             _playerMotor = GetComponent<PlayerMotor>();
             _anim = GetComponent<Animator>();
@@ -61,13 +65,6 @@ namespace Game.Player
             _animCont.Update();
 
             DashVisuals(!_playerMotor.IsDashing);
-
-
-            for (int i = 0; i < _damageables.Count; i++)
-            {
-                if (_damageables[i] == null)
-                    _damageables.Remove(_damageables[i]);
-            }
 
         }
 
@@ -94,6 +91,9 @@ namespace Game.Player
         public void TakeDamage(int damage)
         {
             _health -= damage;
+
+            _healthSlider.value = _health / _maxHealth;
+            //_animCont.HitAnimation();
             if(_health<=0)
                 Die();
         }
@@ -105,7 +105,7 @@ namespace Game.Player
 
         public int GetHealth()
         {
-            return _health;
+            return (int)_health;
         }
 
         public void DashVisuals(bool value)
@@ -118,7 +118,8 @@ namespace Game.Player
                 Transform bestTarget = null;
                 float closestDistanceSqr = Mathf.Infinity;
                 Vector3 currentPosition = transform.position;
-
+                
+                CheckIfDamageablesExist();
                 foreach (var potTarget in _damageables)
                 {
                     Vector3 directionToTarget = potTarget.transform.position - currentPosition;
@@ -131,6 +132,15 @@ namespace Game.Player
                     }
                 }
                 return bestTarget;
+        }
+
+        private void CheckIfDamageablesExist()
+        {
+            for (int i = 0; i < _damageables.Count; i++)
+            {
+                if (_damageables[i] == null)
+                    _damageables.Remove(_damageables[i]);
+            }
         }
 
         private void OnTriggerEnter(Collider other)
@@ -152,6 +162,11 @@ namespace Game.Player
                 if (other.gameObject.Equals(_damageables[i]))
                     _damageables.Remove(_damageables[i]);
             }
+        }
+
+        public void RemoveFromList(GameObject enemy)
+        {
+            _damageables.Remove(enemy);
         }
     }
 }

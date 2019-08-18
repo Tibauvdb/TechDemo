@@ -43,7 +43,7 @@ namespace Game.GamePlay.Weapons
         private void OnTriggerEnter(Collider other)
         {
             IDamageable damageable = other.gameObject.GetComponent<IDamageable>();
-            if (other.gameObject.GetComponent<IDamageable>() == null || other.gameObject.tag == "Player" || Attacking == false || other.gameObject.GetComponent<IDamageable>().GetHealth()<=0)
+            if (other.gameObject.GetComponent<IDamageable>() == null || other.gameObject.tag == this.gameObject.tag || Attacking == false || other.gameObject.GetComponent<IDamageable>().GetHealth()<=0)
             {
                 return;
             }

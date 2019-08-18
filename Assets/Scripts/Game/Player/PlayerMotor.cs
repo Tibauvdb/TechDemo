@@ -107,6 +107,7 @@ namespace Game.Player
 
         public void RotateTo(Transform target)
         {
+            if (target == null) return;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(target.position-_playerTransform.position), Time.deltaTime * 10);
         }
 

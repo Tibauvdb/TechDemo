@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Game.BehaviourTree;
 using Game.GamePlay;
+using Game.GamePlay.Weapons;
 using Game.Player;
 using Unity.Jobs;
 using UnityEngine;
@@ -47,6 +48,13 @@ namespace Game.Enemy
         private float _maxRoamCooldown = 5f;
         private bool _inRoamCooldown = false;
 
+        [SerializeField] private float _attackPrepTime;
+        private float _attackPrepTimer;
+
+        public bool Attacking = false;
+
+        [SerializeField] private GameObject _sword;
+        private Sword _swordScript;
         private void Start()
         {
             #region InitVariables           
@@ -65,6 +73,8 @@ namespace Game.Enemy
 
             _playerTransform = PlayerController.PlayerTransform;
             _playerController = _playerTransform.GetComponent<PlayerController>();
+
+            _swordScript = _sword.GetComponent<Sword>();
             #endregion
 
 
@@ -100,6 +110,8 @@ namespace Game.Enemy
             Dissolve();
 
             _animationsController.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_enemyMotor.GetNavMeshVelocity().x),Mathf.Abs(_enemyMotor.GetNavMeshVelocity().z)));
+
+            _animationsController.Update();
         }
 
         private static float GetBiggestValue(float value1, float value2)
@@ -136,12 +148,40 @@ namespace Game.Enemy
         private IEnumerator<NodeResult> PrepareAttack()
         {
             Debug.Log("Preparing Attack");
-            yield return NodeResult.Succes;
+            _attackPrepTimer += Time.deltaTime;
+
+            if (_attackPrepTimer >= _attackPrepTime)
+            {
+                Debug.Log("attackpreptimer : " + _attackPrepTimer);
+                _attackPrepTimer = 0;
+
+                yield return NodeResult.Succes;
+            }
+
+            yield return NodeResult.Failure;
         }
 
         private IEnumerator<NodeResult> AttackPlayer()
         {
-            yield return NodeResult.Succes;
+
+            
+            if (Attacking == false && !_animationsController.GetCurrentDominantLayer(1))
+            {
+                Debug.Log("ATTACKING");
+                _animationsController.ChangeLayerWeight(1);
+                _animationsController.LightAttack();
+                _swordScript.Attacking = true;
+            }
+
+            if(Attacking)
+                yield return NodeResult.Running;
+
+            if (!Attacking && _animationsController.GetCurrentDominantLayer(1))
+            {
+                _animationsController.ChangeLayerWeight(0);
+                _swordScript.Attacking = false;
+                yield return NodeResult.Succes;
+            }
         }
 
 
@@ -149,7 +189,12 @@ namespace Game.Enemy
         {
             if (_playerController.GetHealth() > 0)
             {
+                foreach (Material dm in _dissolveMaterials)
+                {
+                    dm.SetColor("_Color0",Color.blue);
+                }
                 _enemyMotor.SetDestination(_playerTransform.position);
+                _enemyMotor.RotateTo(_playerTransform.position);
             }
 
             yield return NodeResult.Succes;
@@ -179,7 +224,6 @@ namespace Game.Enemy
 
         private bool CanSeePlayer()
         {
-            Debug.Log("Can See Player?");
             Vector3 directionToPlayer = _playerTransform.position - _transform.position;
             if (Quaternion.Angle(_transform.rotation, Quaternion.LookRotation(directionToPlayer)) < _fieldOfView / 2)
             {
@@ -229,8 +273,12 @@ namespace Game.Enemy
 
             _anim.SetTrigger("IsDying");
             _anim.SetBool("Dead", true);
+
             _dead = true;
-            //GetComponent<CharacterController>().enabled = false;
+
+            _playerController.RemoveFromList(this.gameObject);
+
+            GetComponent<CapsuleCollider>().enabled = false;
         }
 
         public int GetHealth()
@@ -277,6 +325,11 @@ namespace Game.Enemy
 
         private IEnumerator<NodeResult> Roam()
         {
+            _animationsController.ChangeLayerWeight(0);
+            foreach (Material dm in _dissolveMaterials)
+            {
+                dm.SetColor("_Color0", Color.red);
+            }
             _currentDestination =_enemyMotor.GetRandomDestination(_transform.position, 20, 1);
                                 
             _enemyMotor.SetDestination(_currentDestination);
