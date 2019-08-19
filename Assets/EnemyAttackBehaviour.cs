@@ -23,6 +23,7 @@ public class EnemyAttackBehaviour : StateMachineBehaviour
     {
         animator.gameObject.GetComponent<EnemyMotor>().StopMoving(false);
         animator.gameObject.GetComponent<BasicEnemyBehaviour>().Attacking = false;
+
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

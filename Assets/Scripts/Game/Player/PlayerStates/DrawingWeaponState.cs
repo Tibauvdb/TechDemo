@@ -21,6 +21,8 @@ namespace Game.Player.PlayerStates
         private List<Material> _weaponMaterials = new List<Material>();
         private IInteractable _weaponController;
 
+
+
         public DrawingWeaponState(PlayerMotor playerMotor, PlayerController playerController,
             AnimationsController animController)
         {

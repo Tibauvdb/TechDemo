@@ -33,6 +33,7 @@ namespace Assets.Scripts.Game.Player.PlayerStates
 
         public override void Update()
         {
+
         }
 
         public override void Move(Vector2 direction)

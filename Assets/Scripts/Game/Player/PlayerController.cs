@@ -31,7 +31,7 @@ namespace Game.Player
         [SerializeField] private GameObject _weapon;
         public GameObject Weapon => _weapon;
 
-        private float _maxHealth = 1000;
+        private float _maxHealth = 20;
         private float _health;
         public float Health => _health;
 

@@ -679,7 +679,7 @@ GameObject:
   - component: {fileID: 6793465857807517504}
   - component: {fileID: 3778681896394817885}
   m_Layer: 9
-  m_Name: Dummy
+  m_Name: MeleeEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -770,6 +770,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fieldOfView: 90
   _attackRange: 2
+  _attackPrepTime: 0
   Attacking: 0
   _sword: {fileID: 7673257478010748311}
 --- !u!54 &6793465857807517504

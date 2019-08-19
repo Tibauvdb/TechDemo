@@ -55,6 +55,8 @@ namespace Game.Enemy
 
         [SerializeField] private GameObject _sword;
         private Sword _swordScript;
+        private Material[] _swordMaterials;
+        private float _swordDissolveTarget = 0;
         private void Start()
         {
             #region InitVariables           
@@ -75,6 +77,7 @@ namespace Game.Enemy
             _playerController = _playerTransform.GetComponent<PlayerController>();
 
             _swordScript = _sword.GetComponent<Sword>();
+            _swordMaterials = _sword.GetComponent<MeshRenderer>().materials;
             #endregion
 
 
@@ -85,13 +88,11 @@ namespace Game.Enemy
                         new SequenceNode(
                  new ConditionNode(CanSeePlayer),
                             new ActionNode(SetPlayerAsTarget),
-                            new SequenceNode(
-                     new ConditionNode(CloseEnoughToPlayerToAttack),
-                                new ActionNode(PrepareAttack),
-                                new ActionNode(AttackPlayer))),
-                        new SequenceNode(
-                 new ConditionNode(IsCoverClose),
-                            new ActionNode(MoveToCover)),
+                            new AlwaysSuccessNode(
+                                new SequenceNode(
+                         new ConditionNode(CloseEnoughToPlayerToAttack),
+                                    new ActionNode(PrepareAttack),
+                                    new ActionNode(AttackPlayer)))),
                         new SequenceNode(
                  new ConditionNode(IsRoamingOrWaitingToRoam),
                             new ActionNode(Roam)));
@@ -112,6 +113,10 @@ namespace Game.Enemy
             _animationsController.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_enemyMotor.GetNavMeshVelocity().x),Mathf.Abs(_enemyMotor.GetNavMeshVelocity().z)));
 
             _animationsController.Update();
+
+            StartWeaponAppearing();
+
+            _swordScript.Attacking = Attacking;
         }
 
         private static float GetBiggestValue(float value1, float value2)
@@ -150,40 +155,51 @@ namespace Game.Enemy
             Debug.Log("Preparing Attack");
             _attackPrepTimer += Time.deltaTime;
 
+            _swordDissolveTarget = 0;
+            _animationsController.ChangeLayerWeight(1);
             if (_attackPrepTimer >= _attackPrepTime)
             {
-                Debug.Log("attackpreptimer : " + _attackPrepTimer);
                 _attackPrepTimer = 0;
 
                 yield return NodeResult.Succes;
             }
-
+            
             yield return NodeResult.Failure;
         }
 
         private IEnumerator<NodeResult> AttackPlayer()
-        {
-
-            
-            if (Attacking == false && !_animationsController.GetCurrentDominantLayer(1))
+        {          
+            if (!Attacking)
             {
-                Debug.Log("ATTACKING");
-                _animationsController.ChangeLayerWeight(1);
+                Debug.Log("Starting Light Attack");
+
+
                 _animationsController.LightAttack();
                 _swordScript.Attacking = true;
             }
 
-            if(Attacking)
-                yield return NodeResult.Running;
+           /* if (Attacking)
+            {
+                Debug.Log("Currently Attacking");
+                yield return NodeResult.Failure;
+            }
 
             if (!Attacking && _animationsController.GetCurrentDominantLayer(1))
             {
-                _animationsController.ChangeLayerWeight(0);
+                Debug.Log("Done with Attack");
                 _swordScript.Attacking = false;
-                yield return NodeResult.Succes;
-            }
+                yield return NodeResult.Failure;
+            }*/
+           yield return NodeResult.Failure;
         }
 
+        private void StartWeaponAppearing()
+        {
+            foreach (var weaponMaterial in _swordMaterials)
+            {
+                weaponMaterial.SetFloat("_DissolveAmount", Mathf.Lerp(weaponMaterial.GetFloat("_DissolveAmount"), _swordDissolveTarget, Time.deltaTime * 1.5f));
+            }
+        }
 
         private IEnumerator<NodeResult> SetPlayerAsTarget()
         {
@@ -219,6 +235,7 @@ namespace Game.Enemy
 
         private bool CloseEnoughToPlayerToAttack()
         {
+            //failure if not close enough
             return DistanceToPlayer()<_attackRange;
         }
 
@@ -229,11 +246,15 @@ namespace Game.Enemy
             {
                 RaycastHit hit;
                 if (Physics.Raycast(_transform.position, directionToPlayer, out hit, 100))
-                {   
+                {
                     if (hit.transform.gameObject.layer == 8)
-                        return true;
+                    {
+                        Debug.Log("Sees Player");
+                         return true;
+                    }
                 }
             }
+            Debug.Log("Doesnt See Player");
             return false;
         }
 
@@ -279,6 +300,9 @@ namespace Game.Enemy
             _playerController.RemoveFromList(this.gameObject);
 
             GetComponent<CapsuleCollider>().enabled = false;
+
+            _swordDissolveTarget = 1;
+            
         }
 
         public int GetHealth()
@@ -326,6 +350,7 @@ namespace Game.Enemy
         private IEnumerator<NodeResult> Roam()
         {
             _animationsController.ChangeLayerWeight(0);
+            _swordDissolveTarget = 1;
             foreach (Material dm in _dissolveMaterials)
             {
                 dm.SetColor("_Color0", Color.red);
