@@ -57,6 +57,8 @@ namespace Game.Enemy
         private Sword _swordScript;
         private Material[] _swordMaterials;
         private float _swordDissolveTarget = 0;
+
+        [SerializeField] private LayerMask _layerMask;
         private void Start()
         {
             #region InitVariables           
@@ -241,11 +243,11 @@ namespace Game.Enemy
 
         private bool CanSeePlayer()
         {
-            Vector3 directionToPlayer = _playerTransform.position - _transform.position;
+            Vector3 directionToPlayer = ((_playerTransform.position+Vector3.up) - (_transform.position + Vector3.up));
             if (Quaternion.Angle(_transform.rotation, Quaternion.LookRotation(directionToPlayer)) < _fieldOfView / 2)
             {
                 RaycastHit hit;
-                if (Physics.Raycast(_transform.position, directionToPlayer, out hit, 100))
+                if (Physics.Raycast(_transform.position + Vector3.up, directionToPlayer, out hit, 100,_layerMask))
                 {
                     if (hit.transform.gameObject.layer == 8)
                     {
@@ -253,6 +255,7 @@ namespace Game.Enemy
                          return true;
                     }
                 }
+                Debug.DrawRay(_transform.position + Vector3.up,directionToPlayer,Color.red);
             }
             Debug.Log("Doesnt See Player");
             return false;

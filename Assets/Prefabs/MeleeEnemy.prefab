@@ -713,7 +713,7 @@ Animator:
   m_GameObject: {fileID: 2945561685033772915}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: be50b53ebbea13841bf66ef8defee43a, type: 3}
-  m_Controller: {fileID: 9100000, guid: 53ae7d34c2ade1241939c218219c0069, type: 2}
+  m_Controller: {fileID: 9100000, guid: 06d5b0e9dc0b0ee418d3480356904fea, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -768,11 +768,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3018214435b1284ca70071c26bf7760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fieldOfView: 90
+  _fieldOfView: 180
   _attackRange: 2
-  _attackPrepTime: 0
+  _attackPrepTime: 1
   Attacking: 0
   _sword: {fileID: 7673257478010748311}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 819
 --- !u!54 &6793465857807517504
 Rigidbody:
   m_ObjectHideFlags: 0
