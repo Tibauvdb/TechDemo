@@ -770,7 +770,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fieldOfView: 180
   _attackRange: 2
-  _attackPrepTime: 1
+  _maxAttackPrepTime: 2
+  _minAttackPrepTime: 1.2
   Attacking: 0
   _sword: {fileID: 7673257478010748311}
   _layerMask:

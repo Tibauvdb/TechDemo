@@ -48,7 +48,9 @@ namespace Game.Enemy
         private float _maxRoamCooldown = 5f;
         private bool _inRoamCooldown = false;
 
-        [SerializeField] private float _attackPrepTime;
+        [SerializeField] private float _maxAttackPrepTime;
+        [SerializeField] private float _minAttackPrepTime;
+        private float _attackPrepTime;
         private float _attackPrepTimer;
 
         public bool Attacking = false;
@@ -56,7 +58,7 @@ namespace Game.Enemy
         [SerializeField] private GameObject _sword;
         private Sword _swordScript;
         private Material[] _swordMaterials;
-        private float _swordDissolveTarget = 0;
+        private float _swordDissolveTarget = 1;
 
         [SerializeField] private LayerMask _layerMask;
         private void Start()
@@ -67,6 +69,7 @@ namespace Game.Enemy
             _enemyMotor = GetComponent<EnemyMotor>();
             _anim = GetComponent<Animator>();
             _animationsController = new AnimationsController(_anim);
+
             SkinnedMeshRenderer[] smr = GetComponentsInChildren<SkinnedMeshRenderer>();
             foreach (var mr in smr)
             {
@@ -110,21 +113,12 @@ namespace Game.Enemy
             if(_dead)
                 DissolveOnDeath();
 
-            Dissolve();
 
-            _animationsController.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_enemyMotor.GetNavMeshVelocity().x),Mathf.Abs(_enemyMotor.GetNavMeshVelocity().z)));
-
-            _animationsController.Update();
-
+            ShowHealthBar();
+            UpdateAnimationController();
             StartWeaponAppearing();
 
             _swordScript.Attacking = Attacking;
-        }
-
-        private static float GetBiggestValue(float value1, float value2)
-        {
-            float temp = Mathf.Abs(value1) + Mathf.Abs(value2);
-            return temp > 1 ? 1 : temp;
         }
 
         IEnumerator RunTree()
@@ -133,6 +127,13 @@ namespace Game.Enemy
             {
                 yield return _behaviourTree.Tick();
             }
+        }
+
+        private void UpdateAnimationController()
+        {
+            _animationsController.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_enemyMotor.GetNavMeshVelocity().x), Mathf.Abs(_enemyMotor.GetNavMeshVelocity().z)));
+
+            _animationsController.Update();
         }
 
         private void AttackStunTime()
@@ -154,7 +155,6 @@ namespace Game.Enemy
 
         private IEnumerator<NodeResult> PrepareAttack()
         {
-            Debug.Log("Preparing Attack");
             _attackPrepTimer += Time.deltaTime;
 
             _swordDissolveTarget = 0;
@@ -162,36 +162,25 @@ namespace Game.Enemy
             if (_attackPrepTimer >= _attackPrepTime)
             {
                 _attackPrepTimer = 0;
-
+                GenerateNewAttackPrepTime();
                 yield return NodeResult.Succes;
             }
             
             yield return NodeResult.Failure;
         }
 
+        private void GenerateNewAttackPrepTime()
+        {
+            _attackPrepTime = Random.Range(_minAttackPrepTime, _maxAttackPrepTime);
+        }
+
         private IEnumerator<NodeResult> AttackPlayer()
         {          
             if (!Attacking)
             {
-                Debug.Log("Starting Light Attack");
-
-
                 _animationsController.LightAttack();
                 _swordScript.Attacking = true;
             }
-
-           /* if (Attacking)
-            {
-                Debug.Log("Currently Attacking");
-                yield return NodeResult.Failure;
-            }
-
-            if (!Attacking && _animationsController.GetCurrentDominantLayer(1))
-            {
-                Debug.Log("Done with Attack");
-                _swordScript.Attacking = false;
-                yield return NodeResult.Failure;
-            }*/
            yield return NodeResult.Failure;
         }
 
@@ -207,19 +196,14 @@ namespace Game.Enemy
         {
             if (_playerController.GetHealth() > 0)
             {
-                foreach (Material dm in _dissolveMaterials)
+                /*foreach (Material dm in _dissolveMaterials)
                 {
                     dm.SetColor("_Color0",Color.blue);
-                }
+                }*/
                 _enemyMotor.SetDestination(_playerTransform.position);
                 _enemyMotor.RotateTo(_playerTransform.position);
             }
 
-            yield return NodeResult.Succes;
-        }
-
-        private IEnumerator<NodeResult> MoveToCover()
-        {
             yield return NodeResult.Succes;
         }
 
@@ -250,19 +234,9 @@ namespace Game.Enemy
                 if (Physics.Raycast(_transform.position + Vector3.up, directionToPlayer, out hit, 100,_layerMask))
                 {
                     if (hit.transform.gameObject.layer == 8)
-                    {
-                        Debug.Log("Sees Player");
                          return true;
-                    }
                 }
-                Debug.DrawRay(_transform.position + Vector3.up,directionToPlayer,Color.red);
             }
-            Debug.Log("Doesnt See Player");
-            return false;
-        }
-
-        private bool IsCoverClose()
-        {
             return false;
         }
 
@@ -304,8 +278,7 @@ namespace Game.Enemy
 
             GetComponent<CapsuleCollider>().enabled = false;
 
-            _swordDissolveTarget = 1;
-            
+            _swordDissolveTarget = 1;            
         }
 
         public int GetHealth()
@@ -313,7 +286,7 @@ namespace Game.Enemy
             return (int) _health;
         }
 
-        private void Dissolve()
+        private void ShowHealthBar()
         {
             _healthBarMaterial.SetFloat("_Opacity", Mathf.Lerp(_healthBarMaterial.GetFloat("_Opacity"), _targetOpacity, Time.deltaTime * 2));
             _healthBarMaterial.SetFloat("_HealthRemaining", _health / _maxHealth);
@@ -325,7 +298,6 @@ namespace Game.Enemy
             {
                 dissolve.SetFloat("_DissolveAmount", Mathf.Lerp(dissolve.GetFloat("_DissolveAmount"), 1, Time.deltaTime * 0.5f));
             }
-
 
             if (_dissolveMaterials[0].GetFloat("_DissolveAmount") >= 0.9f)
                 Destroy(this.gameObject);
@@ -354,16 +326,23 @@ namespace Game.Enemy
         {
             _animationsController.ChangeLayerWeight(0);
             _swordDissolveTarget = 1;
-            foreach (Material dm in _dissolveMaterials)
+
+            /*foreach (Material dm in _dissolveMaterials)
             {
                 dm.SetColor("_Color0", Color.red);
-            }
+            }*/
             _currentDestination =_enemyMotor.GetRandomDestination(_transform.position, 20, 1);
                                 
             _enemyMotor.SetDestination(_currentDestination);
 
             _enemyMotor.RotateTo(_currentDestination);
             yield return NodeResult.Succes;
+        }
+
+        private static float GetBiggestValue(float value1, float value2)
+        {
+            float temp = Mathf.Abs(value1) + Mathf.Abs(value2);
+            return temp > 1 ? 1 : temp;
         }
     }
 }
