@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,10 +15,12 @@ namespace Game.Enemy
     [RequireComponent(typeof(Rigidbody))]
     public class EnemyMotor : MonoBehaviour
     {
+        
         private NavMeshAgent _navMeshAgent;
-        public CharacterController CharController { get; private set; }
+        private Rigidbody _rb;
         private Transform _transform;
         private Transform _playerTransform;
+        
         private float _runningSpeed=5f;
         private float _walkingSpeed=3.5f;
 
@@ -26,19 +29,26 @@ namespace Game.Enemy
         private void Awake()
         {
             _navMeshAgent = GetComponent<NavMeshAgent>();
-            CharController = GetComponent<CharacterController>();
-
+            _rb = GetComponent<Rigidbody>();
+            
             _transform = transform;
         }
-        private void Start()
+        IEnumerator Start()
         {
-            
- 
+            while (true)
+            {
+                if (IsOnNavMeshLink())
+                {
+                    yield return StartCoroutine(JumpOffLink(1f, .8f));
+                    _navMeshAgent.CompleteOffMeshLink();
+                }
+
+            yield return null;
+            }
         }
 
         private void Update()
         {
-            
         }
 
         public Vector3 GetNavMeshVelocity()
@@ -88,7 +98,7 @@ namespace Game.Enemy
 
         public bool IsOnNavMesh()
         {
-            return _navMeshAgent.isOnNavMesh;
+            return _navMeshAgent.isOnNavMesh;            
         }
 
         public void StopMoving(bool value)
@@ -106,6 +116,30 @@ namespace Game.Enemy
             NavMesh.SamplePosition(randomPos, out NavMeshHit navHit, range, layerMask);
 
             return navHit.position;
+        }
+
+        public bool IsOnNavMeshLink()
+        {
+            return _navMeshAgent.isOnOffMeshLink;
+        }
+
+        private IEnumerator JumpOffLink(float height, float duration)
+        {
+            _navMeshAgent.speed = 0;
+            GetComponent<Animator>().SetTrigger("JumpDown");
+            OffMeshLinkData data = _navMeshAgent.currentOffMeshLinkData;
+            Vector3 startPos = _navMeshAgent.transform.position;
+            Vector3 endPos = data.endPos + Vector3.up * _navMeshAgent.baseOffset;
+            float normalizedTime = 0.0f;
+            
+            while (normalizedTime < 1.0f)
+            {
+                float yOffset = height * 4.0f * (normalizedTime - normalizedTime * normalizedTime);
+                _navMeshAgent.transform.position =
+                    Vector3.Lerp(startPos, endPos, normalizedTime) + yOffset * Vector3.up;
+                normalizedTime += Time.deltaTime / duration;
+                yield return null;
+            }
         }
     }
 }

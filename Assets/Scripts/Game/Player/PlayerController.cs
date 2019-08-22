@@ -72,6 +72,7 @@ namespace Game.Player
         {
             //Blend Idle - Walking - Running Animation 
             _animCont.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_playerMotor.Movement.x),Mathf.Abs(_playerMotor.Movement.z)));
+            
         }
 
         public void SwitchState<T>(IInteractable interactableObject = null) where T : BaseState

@@ -55,6 +55,13 @@ namespace Game.Player
         public bool IsDashing => _isDashing;
         private float _dashTimer = 0;
         [SerializeField] private float _dashLength;
+
+        private Vector3 _addedDirection;
+
+        [SerializeField] private float slopeForce;
+
+        public Vector3 SlopeNormal;
+        
         private void Start()
         {
             _charCont = GetComponent<CharacterController>();
@@ -77,7 +84,14 @@ namespace Game.Player
 
             LimitMaximumRunningSpeed();
 
+           /* if (_addedDirection.y > 0)
+                _charCont.Move(_addedDirection.normalized * Time.deltaTime);
+            else*/
             _charCont.Move(_velocity * Time.deltaTime);
+
+            if (OnSlope() && (Movement.x>0 || Movement.z>0))
+                _charCont.Move(Vector3.down * _charCont.height / 2 * slopeForce);
+
         }
 
         private void Update()
@@ -92,6 +106,7 @@ namespace Game.Player
                     _isDashing = false;
                 }
             }
+
 
         }
 
@@ -116,6 +131,8 @@ namespace Game.Player
             if (IsGrounded)
             {
                 Vector3 relativeMovement = RelativeDirection(Movement);
+                /*if(_addedDirection.y>0)
+                    relativeMovement = Vector3.Scale(relativeMovement, (_addedDirection));*/
                 SetPlayerRotation(relativeMovement);
                 if (IsWalking)
                     _velocity = relativeMovement * _acceleration; // F(= m.a) [m/s^2] * t [s]   
@@ -149,6 +166,7 @@ namespace Game.Player
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(RelativeDirection(Movement)), Time.deltaTime * 10);
         }
+
         private void ApplyGround()
         {
             if (IsGrounded)
@@ -248,6 +266,28 @@ namespace Game.Player
             
             _isDashing = true;
             _acceleration *= 10;
+        }
+
+        private bool OnSlope()
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(_playerTransform.position, Vector3.down, out hit, _charCont.height / 2 * 1.5f))
+            {
+                if (hit.normal != Vector3.up)
+                {
+                    SlopeNormal = hit.normal;
+                    return true;
+                }
+
+            }
+            SlopeNormal = Vector3.zero;
+            
+            return false;
+        }
+
+        public Quaternion GetPlayerRotation()
+        {
+            return Quaternion.LookRotation(_playerTransform.forward);
         }
     }
 }

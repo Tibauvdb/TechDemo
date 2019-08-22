@@ -56,14 +56,6 @@ namespace Game.Player
         public void ChangeLayerWeight(int layer)
         {
             _currentLayer = layer;
-            /*for (int i = 0; i < _totalAnimationLayers; i++)
-            {
-                if(i==layer)
-                    _anim.SetLayerWeight(layer, 1);
-                else
-                    _anim.SetLayerWeight(i, 0);
-
-            }*/
         }
 
         public void DrawWeapon()
@@ -108,6 +100,11 @@ namespace Game.Player
         public void HitAnimation()
         {
             _anim.SetTrigger("Hit");
+        }
+
+        public void JumpDownAnimation()
+        {
+            _anim.SetTrigger("JumpDown");
         }
     }
 }

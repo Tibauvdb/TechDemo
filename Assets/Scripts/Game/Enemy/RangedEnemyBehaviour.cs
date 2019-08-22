@@ -16,7 +16,7 @@ namespace Game.Enemy
 {
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(EnemyMotor))]
-    class BasicEnemyBehaviour : MonoBehaviour,IDamageable
+    class RangedEnemyBehaviour : MonoBehaviour, IDamageable
     {
         private INode _behaviourTree;
         private Coroutine _treeCoroutine;
@@ -34,7 +34,7 @@ namespace Game.Enemy
         private bool _dead = false;
         [SerializeField] private float _fieldOfView;
         [SerializeField] private int _attackRange;
-        private float _attackStunTime =5f;
+        private float _attackStunTime = 5f;
         private float _attackStunTimer;
         private bool _hasBeenAttacked;
         private float _targetOpacity = 0;
@@ -110,7 +110,7 @@ namespace Game.Enemy
             if (HasBeenAttacked())
                 AttackStunTime();
 
-            if(_dead)
+            if (_dead)
                 DissolveOnDeath();
 
 
@@ -165,7 +165,7 @@ namespace Game.Enemy
                 GenerateNewAttackPrepTime();
                 yield return NodeResult.Succes;
             }
-            
+
             yield return NodeResult.Failure;
         }
 
@@ -175,13 +175,13 @@ namespace Game.Enemy
         }
 
         private IEnumerator<NodeResult> AttackPlayer()
-        {          
+        {
             if (!Attacking)
             {
                 _animationsController.LightAttack();
                 _swordScript.Attacking = true;
             }
-           yield return NodeResult.Failure;
+            yield return NodeResult.Failure;
         }
 
         private void StartWeaponAppearing()
@@ -206,10 +206,10 @@ namespace Game.Enemy
         private IEnumerator<NodeResult> AttackReaction()
         {
             _enemyMotor.StopMoving(true);
-            
+
             _enemyMotor.RotateTo(_playerTransform.position);
 
-            if(_hasBeenAttacked)
+            if (_hasBeenAttacked)
                 yield return NodeResult.Running;
 
             yield return NodeResult.Failure;
@@ -218,19 +218,19 @@ namespace Game.Enemy
         private bool CloseEnoughToPlayerToAttack()
         {
             //failure if not close enough
-            return DistanceToPlayer()<_attackRange;
+            return DistanceToPlayer() < _attackRange;
         }
 
         private bool CanSeePlayer()
         {
-            Vector3 directionToPlayer = ((_playerTransform.position+Vector3.up) - (_transform.position + Vector3.up));
+            Vector3 directionToPlayer = ((_playerTransform.position + Vector3.up) - (_transform.position + Vector3.up));
             if (Quaternion.Angle(_transform.rotation, Quaternion.LookRotation(directionToPlayer)) < _fieldOfView / 2)
             {
                 RaycastHit hit;
-                if (Physics.Raycast(_transform.position + Vector3.up, directionToPlayer, out hit, 100,_layerMask))
+                if (Physics.Raycast(_transform.position + Vector3.up, directionToPlayer, out hit, 100, _layerMask))
                 {
                     if (hit.transform.gameObject.layer == 8)
-                         return true;
+                        return true;
                 }
             }
             return false;
@@ -274,12 +274,12 @@ namespace Game.Enemy
 
             GetComponent<CapsuleCollider>().enabled = false;
 
-            _swordDissolveTarget = 1;            
+            _swordDissolveTarget = 1;
         }
 
         public int GetHealth()
         {
-            return (int) _health;
+            return (int)_health;
         }
 
         private void ShowHealthBar()
@@ -301,7 +301,7 @@ namespace Game.Enemy
 
         private bool IsRoamingOrWaitingToRoam()
         {
-            if (_enemyMotor.HasNavMeshReachedDestination() && _roamCooldown <= 0 && _inRoamCooldown==false)
+            if (_enemyMotor.HasNavMeshReachedDestination() && _roamCooldown <= 0 && _inRoamCooldown == false)
             {
                 _roamCooldown = Random.Range(_minRoamCooldown, _maxRoamCooldown);
                 _inRoamCooldown = true;
@@ -324,8 +324,8 @@ namespace Game.Enemy
             _swordDissolveTarget = 1;
 
 
-            _currentDestination =_enemyMotor.GetRandomDestination(_transform.position, 20, 1);
-                                
+            _currentDestination = _enemyMotor.GetRandomDestination(_transform.position, 20, 1);
+
             _enemyMotor.SetDestination(_currentDestination);
 
             _enemyMotor.RotateTo(_currentDestination);
@@ -337,8 +337,6 @@ namespace Game.Enemy
             float temp = Mathf.Abs(value1) + Mathf.Abs(value2);
             return temp > 1 ? 1 : temp;
         }
-
-
     }
 }
 
