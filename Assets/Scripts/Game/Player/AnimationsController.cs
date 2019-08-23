@@ -25,9 +25,6 @@ namespace Game.Player
         public AnimationsController(Animator animator)
         {
             _anim = animator;
-
-            SwordSheathToWalkingSB = _anim.GetBehaviour<SwordSheathToWalking>();
-            SwordSheathToWalkingSB.AnimCont = this;
         }
 
         public void Update()
@@ -105,6 +102,21 @@ namespace Game.Player
         public void JumpDownAnimation()
         {
             _anim.SetTrigger("JumpDown");
+        }
+
+        public void Heal()
+        {
+            _anim.SetTrigger("Heal");
+        }
+
+        public void PrepareRangedAttack()
+        {
+            _anim.SetTrigger("StartRangedAttack");
+        }
+
+        public void ResetAnimation()
+        {
+            _anim.SetTrigger("Reset");
         }
     }
 }

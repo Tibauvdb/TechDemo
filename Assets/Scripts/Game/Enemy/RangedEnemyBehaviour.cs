@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Game.BehaviourTree;
 using Game.GamePlay;
+using Game.GamePlay.Weapons;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Game.Enemy
 {
@@ -9,31 +11,38 @@ namespace Game.Enemy
     [RequireComponent(typeof(EnemyMotor))]
     class RangedEnemyBehaviour : BaseEnemyBehaviour, IDamageable
     {
-        [Header("RangedEnemyExtraStats")]
+        [Header("Ranged Attack Parameters")]
         [SerializeField] private float _baseMana;
         [SerializeField] private float _maxMana;
         [SerializeField] private float _manaGainOnAttack;
         private float _currentMana;
+        [SerializeField] private GameObject _attackPrefab;
+        [SerializeField] private Transform _rightHand;
 
         [Header("Healing Parameters")]
-        [SerializeField] private float _healPreperationTime;
-        private float _healPreperationTimer;
         [SerializeField] private float _healCooldown;
         [SerializeField] private float _healManaCost;
         [SerializeField] private float _healAmount;
         private float _healCooldownTimer;
         private GameObject _allyToHeal;
 
+        public bool PreparingAttack;
+        private bool _readyToAttack;
+        private bool _readyToHeal;
+        
+        private GameObject _attackGO;
+        private List<GameObject> _attacks = new List<GameObject>();
         private void Start()
         {
             base.Start();
 
             _currentMana = _baseMana;
+            //PreparingAttack = false;
 
             BehaviourTree = new SelectorNode(
-     new SequenceNode(
+     /*new SequenceNode(
          new ConditionNode(HasBeenAttacked),
-                    new ActionNode(AttackReaction)),
+                    new ActionNode(AttackReaction)),*/
                 new SequenceNode(
          new ConditionNode(CanHealAlly),
                     new ActionNode(ChooseAllyToHeal),
@@ -43,12 +52,11 @@ namespace Game.Enemy
                             new ActionNode(HealAlly)))),
                 new SequenceNode(
          new ConditionNode(CanSeePlayer),
-                    new ActionNode(SetPlayerAsTarget),
                     new AlwaysSuccessNode(
                         new SequenceNode(
                  new ConditionNode(CloseEnoughToPlayerToAttack),
-                            new ActionNode(PrepareAttack),
-                            new ActionNode(AttackPlayerRanged)))),
+                            new ActionNode(PrepareRangedAttack),
+                            new ActionNode(RangedAttack)))),
                 new SequenceNode(
          new ConditionNode(IsRoamingOrWaitingToRoam),
                     new ActionNode(Roam)));
@@ -94,8 +102,7 @@ namespace Game.Enemy
 
         public IEnumerator<NodeResult> PrepareHeal()
         {
-            _healPreperationTimer += Time.deltaTime;
-            if (_healPreperationTimer >= _healPreperationTime)
+            if (_readyToHeal)
                 yield return NodeResult.Succes;
 
             yield return NodeResult.Failure;
@@ -103,7 +110,8 @@ namespace Game.Enemy
 
         public IEnumerator<NodeResult> HealAlly()
         {
-            Debug.Log("Healed Ally");
+            AnimController.Heal();
+
             _allyToHeal.GetComponent<BaseEnemyBehaviour>().AddHealth(_healAmount);
 
             _healCooldownTimer = _healCooldown;
@@ -114,15 +122,69 @@ namespace Game.Enemy
         }
         #endregion
 
+        private IEnumerator<NodeResult> PrepareRangedAttack()
+        {
+            Debug.Log("preparing attack "+_readyToAttack + " | "+PreparingAttack);
+            GetComponent<NavMeshAgent>().speed = 0f;
+
+            if (!PreparingAttack && _attackGO==null)
+            {
+                _attackGO = Instantiate(_attackPrefab, _rightHand);
+                PreparingAttack = true;
+                AnimController.PrepareRangedAttack();
+            }
+
+            if (_readyToAttack)
+                yield return NodeResult.Succes;
+
+            //_enemyMotor.StopMoving(true);
+            yield return NodeResult.Failure;
+        }
+
         private IEnumerator<NodeResult> RangedAttack()
         {
-            //Set To Attacking -> in animationUpdate
-            //Play Animation ->here
-            //Instantiate Object in Hand->here
-            //Release Object in AnimationEvent ->animEvent
-            //Gain Mana
+            Debug.Log("PerformingAttack " + PreparingAttack);
+            _attackGO.transform.parent = null;
+            _attackGO.GetComponent<RangedProjectile>().SetTarget(PlayerTransform.position+ Vector3.up);
+            _attackGO = null;
 
+            //PreparingAttack = false;
+            _readyToAttack = false;
+
+            _currentMana += _manaGainOnAttack;
+
+            //_enemyMotor.StopMoving(false);
             yield return NodeResult.Succes;
+        }
+
+        public void DonePreparingAttack()
+        {
+            _readyToAttack = true;
+            Debug.Log("donePreparingAttack + : "+_readyToAttack);
+        }
+
+        public void DonePreparingHeal()
+        {
+            _readyToHeal = true;
+        }
+
+        private bool CanSeePlayer()
+        {
+            bool canSeePlayer = base.CanSeePlayer();
+
+            if (PreparingAttack)
+                return true;
+            return canSeePlayer;
+        }
+
+        private bool CloseEnoughToPlayerToAttack()
+        {
+            bool distance = base.CloseEnoughToPlayerToAttack();
+
+            if (PreparingAttack)
+                return true;
+
+            return distance;
         }
     }
 

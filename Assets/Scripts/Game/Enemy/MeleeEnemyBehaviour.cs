@@ -85,6 +85,13 @@ namespace Game.Enemy
 
             return roam;
         }
+
+        private void TakeDamage(int damage)
+        {
+            base.TakeDamage(damage);
+
+            AnimController.HitAnimation();
+        }
     }
 }
 

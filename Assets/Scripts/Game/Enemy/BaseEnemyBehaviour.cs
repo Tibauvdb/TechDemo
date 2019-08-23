@@ -15,11 +15,11 @@ namespace Game.Enemy
         public Coroutine TreeCoroutine;
 
         private Transform _transform;
-        private EnemyMotor _enemyMotor;
+        public EnemyMotor _enemyMotor;
         private Animator _anim;
         public AnimationsController AnimController;
 
-        private Transform _playerTransform;
+        public Transform PlayerTransform;
         private PlayerController _playerController;
 
         [Header("Enemy Stats")]
@@ -75,9 +75,9 @@ namespace Game.Enemy
 
             _healthBarMaterial = _transform.Find("HealthBar").GetComponent<MeshRenderer>().material;
 
-            _playerTransform = PlayerController.PlayerTransform;
+            PlayerTransform = PlayerController.PlayerTransform;
 
-            _playerController = _playerTransform.GetComponent<PlayerController>();
+            _playerController = PlayerTransform.GetComponent<PlayerController>();
 
             #endregion
         }
@@ -110,7 +110,7 @@ namespace Game.Enemy
         {
             _enemyMotor.StopMoving(true);
 
-            _enemyMotor.RotateTo(_playerTransform.position);
+            _enemyMotor.RotateTo(PlayerTransform.position);
 
             if (_hasBeenAttacked)
                 yield return NodeResult.Running;
@@ -170,15 +170,15 @@ namespace Game.Enemy
 
         public float DistanceToPlayer()
         {
-            return Vector3.Distance(_transform.position, _playerTransform.position);
+            return Vector3.Distance(_transform.position, PlayerTransform.position);
         }
         
         public IEnumerator<NodeResult> SetPlayerAsTarget()
         {
             if (_playerController.GetHealth() > 0)
             {
-                _enemyMotor.SetDestination(_playerTransform.position);
-                _enemyMotor.RotateTo(_playerTransform.position);
+                _enemyMotor.SetDestination(PlayerTransform.position);
+                _enemyMotor.RotateTo(PlayerTransform.position);
 
                 yield return NodeResult.Succes;
             }
@@ -188,19 +188,17 @@ namespace Game.Enemy
 
         public bool CloseEnoughToPlayerToAttack()
         {
-            //failure if not close enough
             return DistanceToPlayer() < _attackRange;
         }
 
         public bool CanSeePlayer()
         {
-            Vector3 directionToPlayer = ((_playerTransform.position + Vector3.up) - (_transform.position + Vector3.up));
+            Vector3 directionToPlayer = ((PlayerTransform.position + Vector3.up) - (_transform.position + Vector3.up));
             if (Quaternion.Angle(_transform.rotation, Quaternion.LookRotation(directionToPlayer)) < _fieldOfView / 2)
             {
                 RaycastHit hit;
                 if (Physics.Raycast(_transform.position + Vector3.up, directionToPlayer, out hit, 100, _layerMask))
                 {
-                    Debug.Log("Can See Player");
                     if (hit.transform.gameObject.layer == 8)
                         return true;
                 }
@@ -214,6 +212,7 @@ namespace Game.Enemy
 
         public bool IsRoamingOrWaitingToRoam()
         {
+            Debug.Log(_enemyMotor.HasNavMeshReachedDestination() + " | | |");
             if (_enemyMotor.HasNavMeshReachedDestination() && _roamCooldown <= 0 && _inRoamCooldown == false)
             {
                 _roamCooldown = Random.Range(_minRoamCooldown, _maxRoamCooldown);
@@ -240,6 +239,7 @@ namespace Game.Enemy
             _enemyMotor.SetDestination(_currentDestination);
 
             _enemyMotor.RotateTo(_currentDestination);
+            Debug.Log("CanRoam");
             yield return NodeResult.Succes;
         }
 
@@ -276,7 +276,7 @@ namespace Game.Enemy
             _attackStunTimer = 0;
 
             _health -= damage;
-            AnimController.HitAnimation();
+            //AnimController.HitAnimation();
 
             if (_health <= 0)
                 Die();
