@@ -768,12 +768,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3018214435b1284ca70071c26bf7760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fieldOfView: 180
+  _fieldOfView: 90
   _attackRange: 2
-  _maxAttackPrepTime: 2
-  _minAttackPrepTime: 1.2
   Attacking: 0
+  _minAttackPrepTime: 1.2
+  _maxAttackPrepTime: 2
   _sword: {fileID: 7673257478010748311}
+  BaseSpeed: 3.5
+  _minRoamCooldown: 1
+  _maxRoamCooldown: 5
   _layerMask:
     serializedVersion: 2
     m_Bits: 819

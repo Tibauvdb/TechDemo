@@ -33,6 +33,7 @@ namespace Game.Enemy
             
             _transform = transform;
         }
+
         IEnumerator Start()
         {
             while (true)

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Game.GamePlay;
 using Game.Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Game.Player.PlayerStates
 {
@@ -15,6 +16,8 @@ namespace Assets.Scripts.Game.Player.PlayerStates
         private readonly PlayerMotor _playerMotor;
         private readonly AnimationsController _animController;
 
+        private float _deathResetTimer;
+        private float _deathResetTime = 5f;
         public DeathState(PlayerMotor playerMotor, PlayerController playerController, 
             AnimationsController animController)
         {
@@ -33,7 +36,10 @@ namespace Assets.Scripts.Game.Player.PlayerStates
 
         public override void Update()
         {
+            _deathResetTimer += Time.deltaTime;
 
+            if (_deathResetTimer >= _deathResetTime)
+                SceneManager.LoadScene(0);
         }
 
         public override void Move(Vector2 direction)

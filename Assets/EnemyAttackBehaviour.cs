@@ -15,14 +15,14 @@ public class EnemyAttackBehaviour : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.gameObject.GetComponent<EnemyMotor>().StopMoving(true);
-        animator.gameObject.GetComponent<BasicEnemyBehaviour>().Attacking = true;
+        animator.gameObject.GetComponent<BaseEnemyBehaviour>().Attacking = true;
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.gameObject.GetComponent<EnemyMotor>().StopMoving(false);
-        animator.gameObject.GetComponent<BasicEnemyBehaviour>().Attacking = false;
+        animator.gameObject.GetComponent<BaseEnemyBehaviour>().Attacking = false;
 
     }
 
