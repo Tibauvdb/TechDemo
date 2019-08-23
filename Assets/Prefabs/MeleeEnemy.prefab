@@ -855,7 +855,7 @@ MonoBehaviour:
   _attackRange: 2
   _minAttackPrepTime: 1.2
   _maxAttackPrepTime: 2
-  _attackStunTime: 5
+  _attackStunTime: 0
   _minRoamCooldown: 1
   _maxRoamCooldown: 5
   _layerMask:
