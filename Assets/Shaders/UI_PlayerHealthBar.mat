@@ -21,7 +21,7 @@ Material:
     m_TexEnvs: []
     m_Floats:
     - _EdgeLine: -157.25
-    - _HealthRemaining: 0.459
+    - _HealthRemaining: 0.44
     - _MaxY: 1
     - _MinY: 0
     - _Opacity: 1
