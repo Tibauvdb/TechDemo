@@ -21,7 +21,6 @@ public class RangedAttackOverBehaviour : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log("OnStateExitAnim");
         animator.gameObject.GetComponent<RangedEnemyBehaviour>().PreparingAttack = false;
         animator.gameObject.GetComponent<NavMeshAgent>().speed = 3.5f;
     }

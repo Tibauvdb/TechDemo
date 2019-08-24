@@ -31,7 +31,7 @@ namespace Game.Player
         [SerializeField] private GameObject _weapon;
         public GameObject Weapon => _weapon;
 
-        private float _maxHealth = 20;
+        private float _maxHealth = 10;
         private float _health;
         public float Health => _health;
 
@@ -40,6 +40,7 @@ namespace Game.Player
         [SerializeField] private List<GameObject> _damageables = new List<GameObject>();
 
         [SerializeField] private Slider _healthSlider;
+        [SerializeField] private Image _healthImage;
         void Start()
         {
             _health = _maxHealth;
@@ -66,6 +67,7 @@ namespace Game.Player
 
             DashVisuals(!_playerMotor.IsDashing);
 
+            _healthImage.fillAmount = Mathf.Lerp(_healthImage.fillAmount, _health / _maxHealth, Time.deltaTime*5);
         }
 
         private void UpdateAnimations()
@@ -93,7 +95,8 @@ namespace Game.Player
         {
             _health -= damage;
 
-            _healthSlider.value = _health / _maxHealth;
+            //_healthSlider.value = _health / _maxHealth;
+            
             //_animCont.HitAnimation();
             if(_health<=0)
                 Die();

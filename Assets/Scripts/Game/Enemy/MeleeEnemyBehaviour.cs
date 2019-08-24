@@ -25,7 +25,7 @@ namespace Game.Enemy
             _swordMaterials = _sword.GetComponent<MeshRenderer>().materials;
 
             BehaviourTree = new SelectorNode(
-            new SequenceNode(
+             new SequenceNode(
                  new ConditionNode(HasBeenAttacked),
                             new ActionNode(AttackReaction)),
                         new SequenceNode(
@@ -39,6 +39,7 @@ namespace Game.Enemy
                         new SequenceNode(
                  new ConditionNode(IsRoamingOrWaitingToRoam),
                             new ActionNode(Roam)));
+
 
             TreeCoroutine = StartCoroutine(RunTree());
         }

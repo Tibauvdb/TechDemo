@@ -14,6 +14,8 @@ namespace Game.Player
         private readonly PlayerController _playerController;
         private readonly AnimationsController _animController;
 
+        private float _weaponDrawCooldownTimer;
+        private float _weaponDrawCooldown = 1.75f;
         public NormalState(PlayerMotor playerMotor, PlayerController playerController,
             AnimationsController animController)
         {
@@ -25,7 +27,7 @@ namespace Game.Player
         // Update is called once per frame
         public override void OnStateEnter(IInteractable interactable)
         {
-
+            _weaponDrawCooldownTimer = _weaponDrawCooldown;
         }
 
         public override void OnStateExit()
@@ -35,7 +37,7 @@ namespace Game.Player
 
         public override void Update()
         {
-
+            _weaponDrawCooldownTimer -= Time.deltaTime;
         }
 
         public override void Move(Vector2 direction)
@@ -55,14 +57,12 @@ namespace Game.Player
         public override void InteractA()
         {
             //Go into Attack State
-            _playerController.SwitchState<DrawingWeaponState>(_playerController.Weapon.GetComponent<BaseWeapon>());
+            if(_weaponDrawCooldownTimer<=0)
+                _playerController.SwitchState<DrawingWeaponState>(_playerController.Weapon.GetComponent<BaseWeapon>());
         }
 
         public override void InteractB()
         {
-            //Jump
-            //_playerMotor.CanJump = true;
-
         }
 
         public override void InteractX()

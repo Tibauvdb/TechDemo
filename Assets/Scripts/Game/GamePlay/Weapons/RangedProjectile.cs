@@ -45,17 +45,18 @@ namespace Game.GamePlay.Weapons
         private void OnTriggerEnter(Collider other)
         {
             if (!_fired) return;
-            if (other is SphereCollider)
-                return;
-            if (other.gameObject.tag == "Player" && other.GetComponent<IDamageable>()!=null)
+            if (other is SphereCollider) return;
+
+            if (other.gameObject.tag == "Player")
             {
-                Debug.Log("Entering Player Trigger");
+                if (other.GetComponent<IDamageable>() == null) return;
                 IDamageable damageable = other.gameObject.GetComponent<IDamageable>();
 
                 damageable.TakeDamage(_damage);
             
                 Destroy(this.gameObject);
             }
+
             if(other.gameObject.tag!="Enemy")
                 Destroy(this.gameObject);
         }

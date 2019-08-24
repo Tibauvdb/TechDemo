@@ -28,6 +28,7 @@ namespace Assets.Scripts.Game.Player.PlayerStates
         public override void OnStateEnter(IInteractable interactable)
         {
             _animController.StartDeathAnimation();
+            _playerMotor.IsWalking = false;
         }
 
         public override void OnStateExit()
@@ -40,6 +41,8 @@ namespace Assets.Scripts.Game.Player.PlayerStates
 
             if (_deathResetTimer >= _deathResetTime)
                 SceneManager.LoadScene(0);
+
+            _playerMotor.StopMoving();
         }
 
         public override void Move(Vector2 direction)

@@ -5,7 +5,9 @@ using Game.GamePlay.Weapons;
 using Game.Player;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 using Random = UnityEngine.Random;
+
 
 namespace Game.Enemy
 {
@@ -66,7 +68,6 @@ namespace Game.Enemy
             _enemyMotor = GetComponent<EnemyMotor>();
             _anim = GetComponent<Animator>();
             AnimController = new AnimationsController(_anim);
-
             SkinnedMeshRenderer[] smr = GetComponentsInChildren<SkinnedMeshRenderer>();
             foreach (var mr in smr)
             {
@@ -108,6 +109,7 @@ namespace Game.Enemy
 
         public IEnumerator<NodeResult> AttackReaction()
         {
+            Debug.Log("Reacting to attack");
             _enemyMotor.StopMoving(true);
 
             _enemyMotor.RotateTo(PlayerTransform.position);
@@ -212,7 +214,6 @@ namespace Game.Enemy
 
         public bool IsRoamingOrWaitingToRoam()
         {
-            Debug.Log(_enemyMotor.HasNavMeshReachedDestination() + " | | |");
             if (_enemyMotor.HasNavMeshReachedDestination() && _roamCooldown <= 0 && _inRoamCooldown == false)
             {
                 _roamCooldown = Random.Range(_minRoamCooldown, _maxRoamCooldown);
@@ -239,7 +240,6 @@ namespace Game.Enemy
             _enemyMotor.SetDestination(_currentDestination);
 
             _enemyMotor.RotateTo(_currentDestination);
-            Debug.Log("CanRoam");
             yield return NodeResult.Succes;
         }
 
@@ -250,7 +250,7 @@ namespace Game.Enemy
         public void Die()
         {
             _enemyMotor.StopMoving(true);
-
+            
             _targetOpacity = 0;
 
             _anim.SetTrigger("IsDying");
@@ -259,7 +259,7 @@ namespace Game.Enemy
             _dead = true;
 
             _playerController.RemoveFromList(this.gameObject);
-
+            Game.Instance.DamagedEnemies.Remove(this.gameObject);
             GetComponent<CapsuleCollider>().enabled = false;
         }
         
@@ -313,6 +313,8 @@ namespace Game.Enemy
 
             if (_dissolveMaterials[0].GetFloat("_DissolveAmount") >= 0.9f)
                 Destroy(this.gameObject);
+
+            GetComponent<NavMeshAgent>().speed = 0;
         }
 
         public static float GetBiggestValue(float value1, float value2)

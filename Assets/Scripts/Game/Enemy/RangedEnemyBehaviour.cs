@@ -31,7 +31,8 @@ namespace Game.Enemy
         private bool _readyToHeal;
         
         private GameObject _attackGO;
-        private List<GameObject> _attacks = new List<GameObject>();
+
+        [SerializeField] private GameObject _healFXPrefab;
         private void Start()
         {
             base.Start();
@@ -40,10 +41,7 @@ namespace Game.Enemy
             //PreparingAttack = false;
 
             BehaviourTree = new SelectorNode(
-     /*new SequenceNode(
-         new ConditionNode(HasBeenAttacked),
-                    new ActionNode(AttackReaction)),*/
-                new SequenceNode(
+     new SequenceNode(
          new ConditionNode(CanHealAlly),
                     new ActionNode(ChooseAllyToHeal),
                     new AlwaysSuccessNode(
@@ -81,9 +79,11 @@ namespace Game.Enemy
 
         public bool CanHealAlly()
         {
-            if (_healCooldownTimer<=0 && _currentMana>=_healManaCost)
-                return true;
+            if (_healCooldownTimer <= 0 && _currentMana >= _healManaCost)
+            {
 
+                return true;
+            }
             return false;
         }
 
@@ -92,10 +92,10 @@ namespace Game.Enemy
             //Get Random Ally From List Of Damaged Allies To Heal
             if (Game.Instance.DamagedEnemies.Count == 0)
                 yield return NodeResult.Failure;
-
-            if (_allyToHeal != null)
+            //if(_allyToHeal==null)
+            if (_allyToHeal != null )
                 yield return NodeResult.Succes;
-
+            AnimController.Heal();
             _allyToHeal = Game.Instance.DamagedEnemies[Random.Range(0, Game.Instance.DamagedEnemies.Count)];
             yield return NodeResult.Succes;
         }
@@ -104,13 +104,12 @@ namespace Game.Enemy
         {
             if (_readyToHeal)
                 yield return NodeResult.Succes;
-
             yield return NodeResult.Failure;
         }
 
         public IEnumerator<NodeResult> HealAlly()
         {
-            AnimController.Heal();
+            Instantiate(_healFXPrefab, _allyToHeal.transform);
 
             _allyToHeal.GetComponent<BaseEnemyBehaviour>().AddHealth(_healAmount);
 
@@ -122,9 +121,10 @@ namespace Game.Enemy
         }
         #endregion
 
+        #region RangedAttack
+      
         private IEnumerator<NodeResult> PrepareRangedAttack()
         {
-            Debug.Log("preparing attack "+_readyToAttack + " | "+PreparingAttack);
             GetComponent<NavMeshAgent>().speed = 0f;
 
             if (!PreparingAttack && _attackGO==null)
@@ -143,7 +143,6 @@ namespace Game.Enemy
 
         private IEnumerator<NodeResult> RangedAttack()
         {
-            Debug.Log("PerformingAttack " + PreparingAttack);
             _attackGO.transform.parent = null;
             _attackGO.GetComponent<RangedProjectile>().SetTarget(PlayerTransform.position+ Vector3.up);
             _attackGO = null;
@@ -156,11 +155,11 @@ namespace Game.Enemy
             //_enemyMotor.StopMoving(false);
             yield return NodeResult.Succes;
         }
+        #endregion
 
         public void DonePreparingAttack()
         {
             _readyToAttack = true;
-            Debug.Log("donePreparingAttack + : "+_readyToAttack);
         }
 
         public void DonePreparingHeal()
@@ -172,7 +171,7 @@ namespace Game.Enemy
         {
             bool canSeePlayer = base.CanSeePlayer();
 
-            if (PreparingAttack)
+            if (PreparingAttack) //Keep preparing attack even when enemy cant see player
                 return true;
             return canSeePlayer;
         }

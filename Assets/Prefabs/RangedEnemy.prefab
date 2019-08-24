@@ -1620,6 +1620,8 @@ MonoBehaviour:
   _healManaCost: 50
   _healAmount: 2
   PreparingAttack: 0
+  _healFXPrefab: {fileID: 2164757231226095328, guid: a6b8e2ea97e4a7a498c8988ab6d62caa,
+    type: 3}
 --- !u!54 &3619598513239192406
 Rigidbody:
   m_ObjectHideFlags: 0
