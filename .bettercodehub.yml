@@ -3,6 +3,5 @@ languages:
 - csharp
 
 exclude:
-- Assets/AmplifyShaderEditor/.*
-- Assets/NavMeshComponents/.*
-- Packages/.*
+- AmplifyShaderEditor/.*
+- NavMeshComponents/.*
