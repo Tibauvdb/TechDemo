@@ -17388,7 +17388,7 @@ PrefabInstance:
     - target: {fileID: 7817220496608317232, guid: f9eb7802c927a884ead5345e07a1aa0b,
         type: 3}
       propertyPath: _maxRoamCooldown
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7817220496608317232, guid: f9eb7802c927a884ead5345e07a1aa0b,
         type: 3}
@@ -21053,7 +21053,7 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -41715,7 +41715,7 @@ PrefabInstance:
     - target: {fileID: 7817220496608317232, guid: f9eb7802c927a884ead5345e07a1aa0b,
         type: 3}
       propertyPath: _maxRoamCooldown
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7817220496608317232, guid: f9eb7802c927a884ead5345e07a1aa0b,
         type: 3}
