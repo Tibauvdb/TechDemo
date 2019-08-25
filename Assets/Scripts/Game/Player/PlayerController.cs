@@ -31,7 +31,7 @@ namespace Game.Player
         [SerializeField] private GameObject _weapon;
         public GameObject Weapon => _weapon;
 
-        private float _maxHealth = 10;
+        private float _maxHealth = 20;
         private float _health;
         public float Health => _health;
 
@@ -74,7 +74,7 @@ namespace Game.Player
         {
             //Blend Idle - Walking - Running Animation 
             _animCont.SetForwardMomentum(GetBiggestValue(Mathf.Abs(_playerMotor.Movement.x),Mathf.Abs(_playerMotor.Movement.z)));
-            
+           
         }
 
         public void SwitchState<T>(IInteractable interactableObject = null) where T : BaseState
@@ -171,6 +171,11 @@ namespace Game.Player
         public void RemoveFromList(GameObject enemy)
         {
             _damageables.Remove(enemy);
+        }
+
+        public AnimationsController GetAnimCont()
+        {
+            return _animCont;
         }
     }
 }

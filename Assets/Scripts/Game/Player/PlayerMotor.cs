@@ -18,7 +18,7 @@ namespace Game.Player
         [SerializeField] private float _walkingSpeedMultiplier;
 
         private CharacterController _charCont;
-        
+        private AnimationsController _animCont;
         private Transform _playerTransform;
         private Transform _cameraTransform;
         [SerializeField] private Vector3 _movement;
@@ -61,10 +61,13 @@ namespace Game.Player
         [SerializeField] private float slopeForce;
 
         public Vector3 SlopeNormal;
-        
+
+        public bool IsFalling;
+        private bool _isLanding;
         private void Start()
         {
             _charCont = GetComponent<CharacterController>();
+            _animCont = GetComponent<PlayerController>().GetAnimCont();
             _playerTransform = transform;
             _cameraTransform = Camera.main.GetComponent<Transform>();
 
@@ -288,6 +291,41 @@ namespace Game.Player
         public Quaternion GetPlayerRotation()
         {
             return Quaternion.LookRotation(_playerTransform.forward);
+        }
+
+        public void CheckIfFalling()
+        {
+            Debug.Log("CheckingIfFalling");
+            if (_velocity.y <= -2 && !IsFalling && !_isLanding)
+            {
+                //Player is falling
+                _animCont.StartFallingAnim();
+                IsFalling = true;
+            }
+
+            if (IsFalling & !_isLanding)
+            {
+                FallingRaycast();
+
+            }
+
+            if (_isLanding && _velocity.y >= -1)
+                _isLanding = false;
+
+        }
+
+        private void FallingRaycast()
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(_playerTransform.position, Vector3.down, out hit, 1.5f))
+            {
+                //Player is close to ground
+                _animCont.StartLandingAnimation();
+                IsFalling = false;
+                _isLanding = true;
+                _animCont.ResetFalling();
+
+            }
         }
     }
 }

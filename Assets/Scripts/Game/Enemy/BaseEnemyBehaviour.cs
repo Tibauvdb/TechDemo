@@ -260,6 +260,8 @@ namespace Game.Enemy
 
             _playerController.RemoveFromList(this.gameObject);
             Game.Instance.DamagedEnemies.Remove(this.gameObject);
+            Game.Instance.EnemyHasDied();
+
             GetComponent<CapsuleCollider>().enabled = false;
         }
         

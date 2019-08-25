@@ -126,7 +126,7 @@ namespace Game.Enemy
         private IEnumerator<NodeResult> PrepareRangedAttack()
         {
             GetComponent<NavMeshAgent>().speed = 0f;
-
+            _enemyMotor.RotateTo(PlayerTransform.position);
             if (!PreparingAttack && _attackGO==null)
             {
                 _attackGO = Instantiate(_attackPrefab, _rightHand);

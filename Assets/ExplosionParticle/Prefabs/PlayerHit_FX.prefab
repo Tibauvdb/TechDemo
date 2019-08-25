@@ -14224,7 +14224,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ba25871131abe90408ca0b5e1f59bd35, type: 2}
+  - {fileID: 2100000, guid: aec97c1da279fa447bea748719100f40, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -19037,7 +19037,7 @@ GameObject:
   - component: {fileID: 5147380169331132698}
   - component: {fileID: 7217160608443069577}
   m_Layer: 0
-  m_Name: Hit PFX
+  m_Name: PlayerHit_FX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

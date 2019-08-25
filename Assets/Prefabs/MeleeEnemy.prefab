@@ -770,7 +770,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyMotor: {fileID: 0}
   PlayerTransform: {fileID: 0}
-  _maxHealth: 10
+  _maxHealth: 6
   _fieldOfView: 90
   Ranged: 0
   Attacking: 0
@@ -2683,6 +2683,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 32.282
       objectReference: {fileID: 0}
+    - target: {fileID: 6114684343101227393, guid: 5e419c00436b2e34aab3b3a4e2678fa5,
+        type: 3}
+      propertyPath: _hitEffectPrefab
+      value: 
+      objectReference: {fileID: 5147380169331132697, guid: 6df332b1c2df2cd4fa00d023fc9ba2ce,
+        type: 3}
     - target: {fileID: 5573721201969550494, guid: 5e419c00436b2e34aab3b3a4e2678fa5,
         type: 3}
       propertyPath: m_Layer

@@ -118,5 +118,20 @@ namespace Game.Player
         {
             _anim.SetTrigger("Reset");
         }
+
+        public void StartFallingAnim()
+        {
+            _anim.SetTrigger("StartFalling");
+        }
+
+        public void StartLandingAnimation()
+        {
+            _anim.SetTrigger("StartLanding");
+        }
+
+        public void ResetFalling()
+        {
+            _anim.ResetTrigger("StartFalling");
+        }
     }
 }

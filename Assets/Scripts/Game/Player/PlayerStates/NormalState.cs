@@ -38,8 +38,11 @@ namespace Game.Player
         public override void Update()
         {
             _weaponDrawCooldownTimer -= Time.deltaTime;
+
+            _playerMotor.CheckIfFalling();
         }
 
+        
         public override void Move(Vector2 direction)
         {
             _playerMotor.IsWalking = _playerMotor.CheckIfWalking(direction);
@@ -56,8 +59,8 @@ namespace Game.Player
 
         public override void InteractA()
         {
-            //Go into Attack State
-            if(_weaponDrawCooldownTimer<=0)
+
+            if(_weaponDrawCooldownTimer<=0 && !_playerMotor.IsFalling)
                 _playerController.SwitchState<DrawingWeaponState>(_playerController.Weapon.GetComponent<BaseWeapon>());
         }
 

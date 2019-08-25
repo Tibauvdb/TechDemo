@@ -89,6 +89,7 @@ namespace Game.Player
                 Debug.Log("switching state to normal state");
                 _playerController.SwitchState<NormalState>();                
             }*/
+            _playerMotor.CheckIfFalling();
 
             SheathTimer();
         }
@@ -120,6 +121,7 @@ namespace Game.Player
         public override void InteractA()
         {
             //Switch To Attacking State
+                if(!_playerMotor.IsFalling)
             _playerController.SwitchState<AttackingState>(_weaponController);
         }
 
@@ -136,7 +138,8 @@ namespace Game.Player
 
         public override void InteractY() //Remove Sword
         {
-            SheatheWeapon();
+            if(!_playerMotor.IsFalling)
+                SheatheWeapon();
         }
 
         private void SheatheWeapon()
