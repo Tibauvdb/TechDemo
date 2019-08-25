@@ -27,13 +27,6 @@ namespace Game
         private int _killedEnemies;
 
         [SerializeField] private List<GameObject> _levelHead = new List<GameObject>();
-        /*[SerializeField] private GameObject _level1;
-        [SerializeField] private GameObject _level2;
-        [SerializeField] private GameObject _level3;
-
-        private List<GameObject> _enemiesInLevel1 = new List<GameObject>();
-        private List<GameObject> _enemiesInLevel2 = new List<GameObject>();
-        private List<GameObject> _enemiesInLevel3 = new List<GameObject>();*/
 
         public void Start()
         {
@@ -41,14 +34,12 @@ namespace Game
             RegisterInputs();
             
             GetEnemiesInLevels();
-            Debug.Log(_enemiesInLevels[0]);
         }
 
         private void Update()
         {
             if(_killedEnemies>=_enemiesInLevels[_currentLevel-1] && _currentLevel!=_levelHead.Count)
                 MoveToNextLevel();
-            Debug.Log(_killedEnemies);
         }
 
         private void GetEnemiesInLevels()
@@ -58,6 +49,7 @@ namespace Game
                 _enemiesInLevels.Add(_levelHead[i].GetComponentsInChildren<BaseEnemyBehaviour>().Length);
             }
         }
+
         private void RegisterInputs()
         {
             _inputHandler.Register(RegistrationFactory.Create(InputNames.A_Button, new InteractACommand(_player)));
@@ -74,7 +66,6 @@ namespace Game
 
         private void MoveToNextLevel()
         {
-            Debug.Log("Moving To NextLevel");
             _currentLevel += 1;
             _levelHead[_currentLevel - 1].SetActive(true);
             _killedEnemies = 0;

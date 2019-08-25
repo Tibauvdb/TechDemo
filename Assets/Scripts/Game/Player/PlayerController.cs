@@ -112,6 +112,11 @@ namespace Game.Player
             return (int)_health;
         }
 
+        public void AddHealth(int amount)
+        {
+            _health += amount;
+        }
+
         public void DashVisuals(bool value)
         {
             _dustParticleSystem.gameObject.SetActive(value);

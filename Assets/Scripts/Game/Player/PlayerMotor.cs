@@ -295,7 +295,6 @@ namespace Game.Player
 
         public void CheckIfFalling()
         {
-            Debug.Log("CheckingIfFalling");
             if (_velocity.y <= -2 && !IsFalling && !_isLanding)
             {
                 //Player is falling

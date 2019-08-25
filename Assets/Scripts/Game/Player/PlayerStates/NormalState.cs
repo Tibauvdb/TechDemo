@@ -16,6 +16,11 @@ namespace Game.Player
 
         private float _weaponDrawCooldownTimer;
         private float _weaponDrawCooldown = 1.75f;
+
+        private float _healStartTimer;
+        private float _timeUntilPlayerStartsHealing = 2f;
+        private float _healTimer;
+        private float _healEveryXSec = 2f;
         public NormalState(PlayerMotor playerMotor, PlayerController playerController,
             AnimationsController animController)
         {
@@ -28,6 +33,8 @@ namespace Game.Player
         public override void OnStateEnter(IInteractable interactable)
         {
             _weaponDrawCooldownTimer = _weaponDrawCooldown;
+            _timeUntilPlayerStartsHealing = 0;
+            _healTimer = 0;
         }
 
         public override void OnStateExit()
@@ -40,9 +47,24 @@ namespace Game.Player
             _weaponDrawCooldownTimer -= Time.deltaTime;
 
             _playerMotor.CheckIfFalling();
+
+            HealPlayer();
         }
 
-        
+        private void HealPlayer()
+        {
+            _healStartTimer += Time.deltaTime;
+
+            if (!(_healStartTimer >= _timeUntilPlayerStartsHealing)) return;
+
+
+            _healTimer += Time.deltaTime;
+            if (_healTimer >= _healEveryXSec)
+            {
+                _playerController.AddHealth(1);
+                _healTimer = 0;
+            }
+        }
         public override void Move(Vector2 direction)
         {
             _playerMotor.IsWalking = _playerMotor.CheckIfWalking(direction);

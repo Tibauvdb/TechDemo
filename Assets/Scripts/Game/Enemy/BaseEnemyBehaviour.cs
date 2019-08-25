@@ -247,7 +247,7 @@ namespace Game.Enemy
 
         #region IDamageable
 
-        public void Die()
+        public virtual void Die()
         {
             _enemyMotor.StopMoving(true);
             
@@ -265,7 +265,7 @@ namespace Game.Enemy
             GetComponent<CapsuleCollider>().enabled = false;
         }
         
-        public void TakeDamage(int damage)
+        public virtual void TakeDamage(int damage)
         {
             if (_dead)
                 return;
@@ -325,7 +325,7 @@ namespace Game.Enemy
             return temp > 1 ? 1 : temp;
         }
 
-        public void AddHealth(float amount)
+        public void AddHealth(int amount)
         {
             _health += amount;
             _health = Mathf.Min(_maxHealth, _health);

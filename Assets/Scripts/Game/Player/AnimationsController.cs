@@ -13,6 +13,7 @@ namespace Game.Player
 
         public readonly SwordSheathToWalking SwordSheathToWalkingSB;
         public readonly AttackOverBehaviour AttackOverBehaviourSB;
+
         private static readonly int _forwardMomentumParameter = Animator.StringToHash("ForwardVelocity");
         private static int _startJumpString = Animator.StringToHash("StartJump");
 

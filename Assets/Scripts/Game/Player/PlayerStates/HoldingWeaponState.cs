@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Game.GamePlay;
+﻿using Game.GamePlay;
 using Game.GamePlay.Weapons;
 using Game.Player.PlayerStates;
-using GamePlay.Weapons;
 using UnityEngine;
 
 namespace Game.Player
@@ -21,15 +15,11 @@ namespace Game.Player
         private Material _weaponMaterial;
         private BaseWeapon _weaponController;
 
-        private int _targetDissolveValue;
-
-        private bool _prepareToExit = false;
-
-        private float _maxDissolve = 0.9f;
-
         private float _sheathTimer = 0;
         private float _timeUntilSheath = 10f;
+
         public HoldingWeaponState(PlayerMotor playerMotor, PlayerController playerController,
+
             AnimationsController animController)
         {
             _playerMotor = playerMotor;
@@ -37,21 +27,9 @@ namespace Game.Player
             _animController = animController;
         }
 
-        private void StartWeaponAppearing()
-        {
-                _weaponMaterial.SetFloat("_DissolveAmount",Mathf.Lerp(_weaponMaterial.GetFloat("_DissolveAmount"),_targetDissolveValue,Time.deltaTime));
-        }
-
         public override void OnStateEnter(IInteractable interactable)
         {
-            /*_targetDissolveValue = 0;
-            //Start Sword Summon Animation
-            if (!_animController.GetCurrentDominantLayer(1))
-            {
-                _animController.ChangeLayerWeight(1);
-                _animController.DrawWeapon();
-            }*/
-
+        
             if (interactable != null)
             {
                 GetWeapon(interactable);
@@ -70,25 +48,13 @@ namespace Game.Player
 
             ((Sword)_weaponController).SetAttacking(false);
         }
+
         public override void OnStateExit()
         {
-            //_prepareToExit = false;
-            //_sheathTimer = 0;
-            //_animController.SheathWeapon();
-
-            //_playerMotor.IsWalking = false;
-
         }
 
         public override void Update()
         {
-            //StartWeaponAppearing();
-
-            /*if (_prepareToExit && _weaponMaterial.GetFloat("_DissolveAmount") > _maxDissolve)
-            {
-                Debug.Log("switching state to normal state");
-                _playerController.SwitchState<NormalState>();                
-            }*/
             _playerMotor.CheckIfFalling();
 
             SheathTimer();
@@ -97,13 +63,9 @@ namespace Game.Player
         private void SheathTimer()
         {
             _sheathTimer += Time.deltaTime;
-            if (_sheathTimer > _timeUntilSheath/* && !_prepareToExit*/)
-            {
-                
-                //SheatheWeapon();
-                _sheathTimer = 0;
+            if (_sheathTimer > _timeUntilSheath)
                 _playerController.SwitchState<SheathingWeapon>(_weaponController);
-            }
+
 
         }
         public override void Move(Vector2 direction)
@@ -121,22 +83,22 @@ namespace Game.Player
         public override void InteractA()
         {
             //Switch To Attacking State
-                if(!_playerMotor.IsFalling)
-            _playerController.SwitchState<AttackingState>(_weaponController);
+            if(!_playerMotor.IsFalling)
+                _playerController.SwitchState<AttackingState>(_weaponController);
         }
 
         public override void InteractB()
         {
-            //_animController.HeavyAttack();
         }
 
         public override void InteractX()
         {
             //Dash
             _playerMotor.PerformDashAttack();
+            _sheathTimer = 0;
         }
 
-        public override void InteractY() //Remove Sword
+        public override void InteractY() //Sheathe Sword
         {
             if(!_playerMotor.IsFalling)
                 SheatheWeapon();
@@ -144,9 +106,6 @@ namespace Game.Player
 
         private void SheatheWeapon()
         {
-            /*_targetDissolveValue = 1;
-            _prepareToExit = true;
-            _animController.SheathWeapon();*/
             _playerController.SwitchState<SheathingWeapon>(_weaponController);
         }
     }

@@ -73,6 +73,7 @@ namespace Game.Enemy
 
         public void StartWeaponAppearing()
         {
+            if (GetHealth() <= 0) _swordDissolveTarget = 1;
             foreach (var weaponMaterial in _swordMaterials)
             {
                 weaponMaterial.SetFloat("_DissolveAmount", Mathf.Lerp(weaponMaterial.GetFloat("_DissolveAmount"), _swordDissolveTarget, Time.deltaTime * 1.5f));
@@ -87,11 +88,11 @@ namespace Game.Enemy
             return roam;
         }
 
-        private void TakeDamage(int damage)
+        public override void TakeDamage(int damage)
         {
             base.TakeDamage(damage);
 
-            AnimController.HitAnimation();
+            //AnimController.HitAnimation(); //Removed because its more difficult without
         }
     }
 }

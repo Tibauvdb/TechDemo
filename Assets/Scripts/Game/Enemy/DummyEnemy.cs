@@ -93,6 +93,11 @@ namespace Game.Enemy
             return (int)_health;
         }
 
+        public void AddHealth(int amount)
+        {
+            
+        }
+
         private void ApplyGround()
         {
             if (_isGrounded)

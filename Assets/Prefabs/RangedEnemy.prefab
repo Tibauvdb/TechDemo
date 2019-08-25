@@ -1604,8 +1604,8 @@ MonoBehaviour:
   _minAttackPrepTime: 1.5
   _maxAttackPrepTime: 0.5
   _attackStunTime: 1.5
-  _minRoamCooldown: 0
-  _maxRoamCooldown: 0.5
+  _minRoamCooldown: 1
+  _maxRoamCooldown: 3
   _layerMask:
     serializedVersion: 2
     m_Bits: 307

@@ -27,8 +27,8 @@ namespace Game.Enemy
         private GameObject _allyToHeal;
 
         public bool PreparingAttack;
-        private bool _readyToAttack;
-        private bool _readyToHeal;
+        public bool ReadyToAttack;
+        public bool ReadyToHeal;
         
         private GameObject _attackGO;
 
@@ -41,18 +41,20 @@ namespace Game.Enemy
             //PreparingAttack = false;
 
             BehaviourTree = new SelectorNode(
-     new SequenceNode(
-         new ConditionNode(CanHealAlly),
+
+
+                new SequenceNode(
+                    new ConditionNode(CanHealAlly),
                     new ActionNode(ChooseAllyToHeal),
                     new AlwaysSuccessNode(
                         new SequenceNode(
-                 new ActionNode(PrepareHeal),
+                            new ActionNode(PrepareHeal),
                             new ActionNode(HealAlly)))),
                 new SequenceNode(
-         new ConditionNode(CanSeePlayer),
+                    new ConditionNode(CanSeePlayer),
                     new AlwaysSuccessNode(
                         new SequenceNode(
-                 new ConditionNode(CloseEnoughToPlayerToAttack),
+                            new ConditionNode(CloseEnoughToPlayerToAttack),
                             new ActionNode(PrepareRangedAttack),
                             new ActionNode(RangedAttack)))),
                 new SequenceNode(
@@ -79,9 +81,8 @@ namespace Game.Enemy
 
         public bool CanHealAlly()
         {
-            if (_healCooldownTimer <= 0 && _currentMana >= _healManaCost)
+            if (_healCooldownTimer <= 0 && _currentMana >= _healManaCost && !PreparingAttack)
             {
-
                 return true;
             }
             return false;
@@ -89,20 +90,22 @@ namespace Game.Enemy
 
         public IEnumerator<NodeResult> ChooseAllyToHeal()
         {
-            //Get Random Ally From List Of Damaged Allies To Heal
             if (Game.Instance.DamagedEnemies.Count == 0)
                 yield return NodeResult.Failure;
-            //if(_allyToHeal==null)
+
             if (_allyToHeal != null )
                 yield return NodeResult.Succes;
+
             AnimController.Heal();
             _allyToHeal = Game.Instance.DamagedEnemies[Random.Range(0, Game.Instance.DamagedEnemies.Count)];
+            
             yield return NodeResult.Succes;
         }
 
         public IEnumerator<NodeResult> PrepareHeal()
         {
-            if (_readyToHeal)
+            _enemyMotor.RemoveAgentDestination();
+            if (ReadyToHeal)
                 yield return NodeResult.Succes;
             yield return NodeResult.Failure;
         }
@@ -111,11 +114,11 @@ namespace Game.Enemy
         {
             Instantiate(_healFXPrefab, _allyToHeal.transform);
 
-            _allyToHeal.GetComponent<BaseEnemyBehaviour>().AddHealth(_healAmount);
+            _allyToHeal.GetComponent<BaseEnemyBehaviour>().AddHealth((int)_healAmount);
 
             _healCooldownTimer = _healCooldown;
             _currentMana -= _healManaCost;
-
+            //ReadyToHeal = false;
             _allyToHeal = null;
             yield return NodeResult.Succes;
         }
@@ -127,14 +130,14 @@ namespace Game.Enemy
         {
             GetComponent<NavMeshAgent>().speed = 0f;
             _enemyMotor.RotateTo(PlayerTransform.position);
-            if (!PreparingAttack && _attackGO==null)
+            if (!PreparingAttack && _attackGO==null && !ReadyToAttack)
             {
                 _attackGO = Instantiate(_attackPrefab, _rightHand);
                 PreparingAttack = true;
                 AnimController.PrepareRangedAttack();
             }
 
-            if (_readyToAttack)
+            if (ReadyToAttack && PreparingAttack)
                 yield return NodeResult.Succes;
 
             //_enemyMotor.StopMoving(true);
@@ -147,8 +150,8 @@ namespace Game.Enemy
             _attackGO.GetComponent<RangedProjectile>().SetTarget(PlayerTransform.position+ Vector3.up);
             _attackGO = null;
 
-            //PreparingAttack = false;
-            _readyToAttack = false;
+            PreparingAttack = false;
+            //ReadyToAttack = false;
 
             _currentMana += _manaGainOnAttack;
 
@@ -159,12 +162,12 @@ namespace Game.Enemy
 
         public void DonePreparingAttack()
         {
-            _readyToAttack = true;
+            ReadyToAttack = true;
         }
 
         public void DonePreparingHeal()
         {
-            _readyToHeal = true;
+            ReadyToHeal = true;
         }
 
         private bool CanSeePlayer()
@@ -173,6 +176,9 @@ namespace Game.Enemy
 
             if (PreparingAttack) //Keep preparing attack even when enemy cant see player
                 return true;
+            if (ReadyToHeal)
+                return false;
+
             return canSeePlayer;
         }
 
