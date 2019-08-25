@@ -37,12 +37,6 @@ namespace Game.Player
         [SerializeField] private Vector3 _velocity = Vector3.zero;
         public Vector3 Velocity => _velocity;
 
-        [SerializeField] private float _horizontalRotationSpeed;
-        public float HorizontalRotationSpeed => _horizontalRotationSpeed;
-
-        [SerializeField] private float _verticalRotationSpeed;
-        public float VerticalRotationSpeed => _verticalRotationSpeed;
-
         [SerializeField] private LayerMask _mapLayerMask;
 
         [SerializeField] private IsGroundedChecker _isGroundedCheck;
@@ -87,9 +81,6 @@ namespace Game.Player
 
             LimitMaximumRunningSpeed();
 
-           /* if (_addedDirection.y > 0)
-                _charCont.Move(_addedDirection.normalized * Time.deltaTime);
-            else*/
             _charCont.Move(_velocity * Time.deltaTime);
 
             if (OnSlope() && (Movement.x>0 || Movement.z>0))
@@ -115,8 +106,6 @@ namespace Game.Player
 
         public void MoveTo(Transform target)
         {
-            /*_playerTransform.position = Vector3.MoveTowards(_playerTransform.position, target.position, Time.deltaTime * 5);
-            _charCont.Move((target.position -_playerTransform.position)*0.01f);*/
             _velocity = target.position-_playerTransform.position;
             target.GetComponent<CharacterController>()
                 .Move((target.position - _playerTransform.position) * Time.deltaTime);
@@ -134,8 +123,7 @@ namespace Game.Player
             if (IsGrounded)
             {
                 Vector3 relativeMovement = RelativeDirection(Movement);
-                /*if(_addedDirection.y>0)
-                    relativeMovement = Vector3.Scale(relativeMovement, (_addedDirection));*/
+
                 SetPlayerRotation(relativeMovement);
                 if (IsWalking)
                     _velocity = relativeMovement * _acceleration; // F(= m.a) [m/s^2] * t [s]   
@@ -156,13 +144,8 @@ namespace Game.Player
         {
             if (IsWalking)
             {
-
-                //transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(transform.forward,relativeMovement,Time.deltaTime * 15,1.0f));
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(relativeMovement), Time.deltaTime * 10);
-                //_lastRotation = transform.rotation;
             }
-            /*else
-                transform.rotation = Quaternion.LookRotation(_lastRotation);*/
         }
 
         public void SetRotation()
@@ -234,9 +217,7 @@ namespace Game.Player
 
         public void StopMoving()
         {
-            //Movement = Vector3.zero;
             _velocity = Vector3.zero;
-            //_velocity = Vector3.Lerp(_velocity, Vector3.zero, Time.deltaTime * 5);
         }
 
         public float GetDistanceFromGround()

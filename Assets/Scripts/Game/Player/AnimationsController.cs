@@ -11,13 +11,8 @@ namespace Game.Player
     {
         private Animator _anim;
 
-        public readonly SwordSheathToWalking SwordSheathToWalkingSB;
-        public readonly AttackOverBehaviour AttackOverBehaviourSB;
-
         private static readonly int _forwardMomentumParameter = Animator.StringToHash("ForwardVelocity");
-        private static int _startJumpString = Animator.StringToHash("StartJump");
 
-        private readonly int _attackLocomotion = Animator.StringToHash("Attacking Locomotion");
         private int _totalAnimationLayers = 2;
         private int _currentLayer;
 

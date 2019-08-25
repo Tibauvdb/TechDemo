@@ -6,7 +6,6 @@ using Game.GamePlay;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 namespace Game.Player
 {
     [RequireComponent(typeof(CharacterController))]
@@ -23,7 +22,6 @@ namespace Game.Player
         [SerializeField] private CinemachineFreeLook _cameraBrain;
         [SerializeField] private float _dashFOV;
         [SerializeField] private ParticleSystem _dustParticleSystem;
-        private float _originalFOV;
         private AnimationsController _animCont;
         public AnimationsController AnimCont => _animCont;
         private StateMachineController _stateMachineController;
@@ -35,7 +33,6 @@ namespace Game.Player
         private float _health;
         public float Health => _health;
 
-        private SkinnedMeshRenderer[] _skinnedMeshRenderers;
         
         [SerializeField] private List<GameObject> _damageables = new List<GameObject>();
 
@@ -52,9 +49,6 @@ namespace Game.Player
 
             _stateMachineController = new StateMachineController(_playerMotor,this,_animCont);
 
-            _skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
-
-            _originalFOV = _cameraBrain.m_Lens.FieldOfView;
         }
 
         // Update is called once per frame
@@ -95,9 +89,6 @@ namespace Game.Player
         {
             _health -= damage;
 
-            //_healthSlider.value = _health / _maxHealth;
-            
-            //_animCont.HitAnimation();
             if(_health<=0)
                 Die();
         }

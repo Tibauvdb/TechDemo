@@ -44,13 +44,12 @@ namespace Game.Player
             {
                 if (state is T)
                 {
-                    //state.OnStateExit();
                     return state;
                 }
 
             }
 
-            throw new SystemException("Requested State Does Not Exist");
+            throw new SystemException("This State Doesn't Exist");
         }
     }
 }

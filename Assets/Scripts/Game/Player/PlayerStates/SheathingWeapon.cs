@@ -61,8 +61,6 @@ namespace Game.Player.PlayerStates
 
             if(_weaponMaterials[0].GetFloat("_DissolveAmount")>=0.9f)
                 _playerController.SwitchState<NormalState>();
-
-            //_playerMotor.StopMoving();
         }
 
         private void MakeWeaponDisappear()

@@ -25,10 +25,7 @@ namespace Game.GamePlay.Weapons
 
         public void PlayAttackParticle()
         {
-            /*_slashEffect = Instantiate(_slashEffectPrefab,transform.position, Quaternion.identity, transform);
-            _slashEffect.Play(true);*/
             _trailRenderer.emitting = true;
-
         }
 
         public void StopAttackParticle()
@@ -51,7 +48,6 @@ namespace Game.GamePlay.Weapons
             Vector3 point = other.ClosestPoint(transform.position);
             damageable.TakeDamage(_swordDamage);
             Instantiate(_hitEffectPrefab, point, Quaternion.identity, null);
-            //play other Animations or something idk?
         }
     }
 }

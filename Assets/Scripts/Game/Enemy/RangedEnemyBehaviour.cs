@@ -38,7 +38,6 @@ namespace Game.Enemy
             base.Start();
 
             _currentMana = _baseMana;
-            //PreparingAttack = false;
 
             BehaviourTree = new SelectorNode(
 
@@ -118,7 +117,7 @@ namespace Game.Enemy
 
             _healCooldownTimer = _healCooldown;
             _currentMana -= _healManaCost;
-            //ReadyToHeal = false;
+
             _allyToHeal = null;
             yield return NodeResult.Succes;
         }
@@ -140,7 +139,6 @@ namespace Game.Enemy
             if (ReadyToAttack && PreparingAttack)
                 yield return NodeResult.Succes;
 
-            //_enemyMotor.StopMoving(true);
             yield return NodeResult.Failure;
         }
 
@@ -151,11 +149,9 @@ namespace Game.Enemy
             _attackGO = null;
 
             PreparingAttack = false;
-            //ReadyToAttack = false;
 
             _currentMana += _manaGainOnAttack;
 
-            //_enemyMotor.StopMoving(false);
             yield return NodeResult.Succes;
         }
         #endregion

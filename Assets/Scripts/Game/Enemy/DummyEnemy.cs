@@ -72,9 +72,7 @@ namespace Game.Enemy
             }
             else
                 Die();
-
-            
-            //_charCTRL.Move(Time.deltaTime * -transform.forward);            
+          
         }
 
         public void Die()

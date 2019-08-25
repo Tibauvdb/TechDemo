@@ -45,7 +45,6 @@ namespace Game.Player.PlayerStates
 
         public override void OnStateExit()
         {
-            //((Sword) _weaponController).SetAttacking(false);
             _swordScript.StopAttackParticle();
             ((Sword) _weaponController).Attacking = false;
         }

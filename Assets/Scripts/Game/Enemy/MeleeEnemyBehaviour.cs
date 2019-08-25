@@ -87,13 +87,6 @@ namespace Game.Enemy
 
             return roam;
         }
-
-        public override void TakeDamage(int damage)
-        {
-            base.TakeDamage(damage);
-
-            //AnimController.HitAnimation(); //Removed because its more difficult without
-        }
     }
 }
 

@@ -132,12 +132,6 @@ namespace Game.Enemy
 
         private IEnumerator JumpOffLink(float height, float duration)
         {
-            /*Vector3 lookDir = data.endPos - data.startPos;
-            _transform.rotation = Quaternion.RotateTowards(_transform.rotation,
-                Quaternion.LookRotation(lookDir), Time.deltaTime*50);*/
-
-
-
             _navMeshAgent.speed = 0;
             OffMeshLinkData data = _navMeshAgent.currentOffMeshLinkData;
             GetComponent<Animator>().SetTrigger("JumpDown");
@@ -148,14 +142,12 @@ namespace Game.Enemy
             
             while (normalizedTime < 1.0f)
             {
-                //if (Quaternion.Dot(_transform.rotation,Quaternion.LookRotation(lookDir)) >=0.95f)
-                //{
-                    float yOffset = height * 4.0f * (normalizedTime - normalizedTime * normalizedTime);
-                    _navMeshAgent.transform.position =
-                    Vector3.Lerp(startPos, endPos, normalizedTime) + yOffset * Vector3.up;
-                    normalizedTime += Time.deltaTime / duration;
-                //}
-                    yield return null;
+                float yOffset = height * 4.0f * (normalizedTime - normalizedTime * normalizedTime);
+                _navMeshAgent.transform.position =
+                Vector3.Lerp(startPos, endPos, normalizedTime) + yOffset * Vector3.up;
+                normalizedTime += Time.deltaTime / duration;
+
+                yield return null;
             }
         }
     }

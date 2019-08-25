@@ -71,8 +71,6 @@ namespace Game.Player.PlayerStates
 
             if(_weaponMaterials[0].GetFloat("_DissolveAmount")<=0.1f)
                 _playerController.SwitchState<HoldingWeaponState>(_weaponController);
-
-            //_playerMotor.StopMoving();
         }
 
         public override void Move(Vector2 direction)

@@ -1,9 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Game.BehaviourTree;
-using Game.GamePlay.Weapons;
 using Game.Player;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -109,7 +107,6 @@ namespace Game.Enemy
 
         public IEnumerator<NodeResult> AttackReaction()
         {
-            Debug.Log("Reacting to attack");
             _enemyMotor.StopMoving(true);
 
             _enemyMotor.RotateTo(PlayerTransform.position);
@@ -159,11 +156,6 @@ namespace Game.Enemy
         public void GenerateNewAttackPrepTime()
         {
             _attackPrepTime = Random.Range(_minAttackPrepTime, _maxAttackPrepTime);
-        }
-
-        public IEnumerator<NodeResult> AttackPlayerRanged()
-        {
-            yield return NodeResult.Succes;
         }
 
         #endregion
@@ -278,7 +270,6 @@ namespace Game.Enemy
             _attackStunTimer = 0;
 
             _health -= damage;
-            //AnimController.HitAnimation();
 
             if (_health <= 0)
                 Die();
