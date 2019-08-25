@@ -13,7 +13,7 @@ namespace Game.GamePlay.Weapons
         private int _damage = 5;
 
         private float _despawnTimer;
-        private float _despawnTime = 15;
+        private float _despawnTime = 5;
 
         private bool _fired = false;
         private float _projectileSpeed = 10;
@@ -32,8 +32,8 @@ namespace Game.GamePlay.Weapons
             }
 
 
-            /*if(_despawnTimer>=_despawnTime)
-                Destroy(this.gameObject);*/
+            if(_despawnTimer>=_despawnTime)
+                Destroy(this.gameObject);
         }
 
         public void SetTarget(Vector3 targetPos)

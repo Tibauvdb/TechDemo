@@ -1,0 +1,8 @@
+component_depth: 1
+languages:
+- csharp
+
+exclude:
+- Assets/AmplifyShaderEditor/.*
+- Assets/NavMeshComponents/.*
+- Packages/.*

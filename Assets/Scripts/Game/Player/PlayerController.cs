@@ -115,6 +115,7 @@ namespace Game.Player
         public void AddHealth(int amount)
         {
             _health += amount;
+            _health = Mathf.Min(_health, _maxHealth);
         }
 
         public void DashVisuals(bool value)
